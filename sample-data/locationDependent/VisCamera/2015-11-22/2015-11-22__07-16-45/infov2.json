@@ -1,0 +1,23 @@
+{
+  "metadatadictionary": {
+    "camera": {
+      "fixed": {
+        "type": "vis rgb",
+        "serial-number": "1234567",
+        "width": "3345",
+        "height": "2566",
+        "rgb-bayer-pattern": "RGGB",
+        "another-data": "... "
+      },
+      "variable": {
+        "exposure": "123",
+        "gain": "456",
+        "whitebalanced": "30"
+      },
+      "optic": {
+        "attribute1": "value2",
+        "attribute2": "value2"
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+<metadatadictionary>
+  <camera>
+    <fixed>
+      <type>vis rgb</type>
+      <serial-number>1234567</serial-number>
+      <width>3345</width>
+      <height>2566</height>
+      <rgb-bayer-pattern>RGGB</rgb-bayer-pattern>
+      <another-data>... </another-data>
+    </fixed>
+    <variable>
+      <exposure>123</exposure>
+      <gain>456</gain>
+      <whitebalanced>30</whitebalanced>
+    </variable>
+    <optic>
+      <attribute1>value2</attribute1>
+      <attribute2>value2</attribute2>
+    </optic>
+  </camera>
+</metadatadictionary>

@@ -7,7 +7,7 @@
     <entry key="camera serial number" value="12345678"/>
     <entry key="image size width" value="3345"/>
     <entry key="image size height" value="2566"/>
-    <emtry key="rgb bayer pattern" value "RGGB"/>
+    <emtry key="rgb bayer pattern" value = "RGGB"/>
     <entry key="more camera data" value="..."/>
     
     <!--variable camera settings-->
