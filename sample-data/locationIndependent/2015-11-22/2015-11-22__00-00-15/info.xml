@@ -1,0 +1,27 @@
+<metadatadictionary>
+    <!-- all values from all location independent sensors are here -->
+
+    <entry key="timestamp" value="2015-11-22_00:00:15"/>
+    <entry key="additional info provided by breeder" value="experiment name"/>
+
+    <!--temperature sensor-->
+    <entry key="temperature in deg celcius" value="47.3"/>
+    <entry key="additional info about temperature sensor like manufaturer and modell" value=""/>
+    
+    <!--humidity sensor-->
+    <entry key="rel humidity in per cent" value="22.3"/>
+    <entry key="additional info about sensor like manufaturer and modell" value=""/>
+
+    <!--windspeed-->
+    <entry key="windspeed in m per s" value="3.5"/>
+    <entry key="additional info about sensor like manufaturer and modell" value=""/>
+
+    <!--arbitrary sensor-->
+    <entry key="arbitrary sensor value A" value="3.5"/>
+    <entry key="arbitrary sensor value B" value="4.5"/>
+    <entry key="arbitrary sensor value C" value="5.5"/>
+    <entry key="additional info about sensor like manufaturer and modell" value=""/>
+
+    <!--more sensors, data, whatever is available and relevant-->
+
+</metadatadictionary>
