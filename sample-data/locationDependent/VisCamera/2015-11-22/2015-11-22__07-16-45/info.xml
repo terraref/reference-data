@@ -1,16 +1,4 @@
 <metadatadictionary>
-  <camera>
-    <fixed>
-    </fixed>
-
-    <type> vis rgb </type>
-    <serial-number>1234567</serial-number>
-    <width>3345</width>
-    <height>2566</height>
-  </camera>
-  
-
-
     <!-- a dictionary of key value pairs of all available meta data, related to this measurement with this sensor/camera-->
     
     <!--fixed camera data-->
