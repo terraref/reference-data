@@ -1,7 +1,4 @@
-##header
-## header
-
-TERRA sensor data standards teleconference				December 9, 2015
+# TERRA sensor data standards teleconference				December 9, 2015
 
 David Lebauer (UIUC)
 Christine Laney, Josh Elliot (Neon)
@@ -14,7 +11,7 @@ Ed Delp (Purdue)
 Larry Biel
 
 https://github.com/terraref/reference-data/issues/2 
-•	Meta-data format for raw data Lemnatec – Is there anything that we’re missing?
+**•	Meta-data format for raw data Lemnatec – Is there anything that we’re missing?**
 o	Dependent on instrument?  Yes, there is a code for each sensor.
 o	What is “raw”?  Has a calibration been applied?  Is the hyperspectral data in radiants?  There are two sets of files – one has been corrected.
 o	Integers can save space, rather than floating points, this will allow you to compute on the fly
