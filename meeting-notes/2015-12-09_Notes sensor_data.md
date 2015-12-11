@@ -1,4 +1,6 @@
-# TERRA sensor data standards teleconference				December 9, 2015
+# TERRA sensor data standards teleconference	
+
+December 9, 2015
 
 David LeBauer (UIUC)
 
