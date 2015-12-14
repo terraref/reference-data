@@ -1,4 +1,4 @@
-#December 11, 2015 2pm EST
+#December 11, 2015 5pm CST
 
 In attendance:
 
