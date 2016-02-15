@@ -11,7 +11,6 @@ Max Burnette, Noah Fahlgren, David LeBauer, David Lee, Cheryl Porter, Geoff Morr
 * [Core experimental meta-data for NARN (draft)]( https://github.com/terraref/reference-data/files/15501/Core.Harmonized.Crop.Experiment.Data_JWW_chp.docx)
 * Cheryl: please comment about the relationships between ICASA and NARDN-HD, scope of NARDN
 * How does this interact with [Brapi API](http://docs.brapi.apiary.io/#introduction/structure-of-the-response-object)? used by FieldBook?
-https://jsapi.apiary.io/apis/brapi.apib
 
 ### Shared Field Measurement Protocols
 
