@@ -19,7 +19,3 @@ Max Burnette, Noah Fahlgren, David LeBauer, David Lee, Cheryl Porter, Geoff Morr
 * FieldBook field measurements don't say _how_ to measure, but provide a framework for collecting the data.
 
 
-
-### References:
-
-[Github issue 18](https://github.com/terraref/reference-data/issues/18)
