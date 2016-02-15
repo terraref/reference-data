@@ -6,16 +6,10 @@ Max Burnette, Noah Fahlgren, David LeBauer, David Lee, Cheryl Porter, Geoff Morr
 
 ## Topics
 
-### Agronomic Meta-data Formats
+### [Agronomic Meta-data Formats](https://github.com/terraref/reference-data/issues/18)
 
-* Cheryl: could you please speak about the relationships between ICASA and NARDN-HD, 
-* https://github.com/terraref/reference-data/issues/18
-
-### Vocabularies to suport
-
-* BETYdb
-* Climate and Forecasting (formal and derived)
-
+* [Core experimental meta-data for NARN (draft)]( https://github.com/terraref/reference-data/files/15501/Core.Harmonized.Crop.Experiment.Data_JWW_chp.docx)
+* Cheryl: please comment about the relationships between ICASA and NARDN-HD, scope of NARDN
 
 ### Shared Field Measurement Protocols
 
