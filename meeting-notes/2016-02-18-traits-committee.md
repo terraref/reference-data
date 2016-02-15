@@ -6,6 +6,7 @@ Max Burnette, Noah Fahlgren, David LeBauer, David Lee, Cheryl Porter, Geoff Morr
 
 ## Topics
 
+
 ### [Agronomic Meta-data Formats](https://github.com/terraref/reference-data/issues/18)
 
 * [Core experimental meta-data for NARN (draft)]( https://github.com/terraref/reference-data/files/15501/Core.Harmonized.Crop.Experiment.Data_JWW_chp.docx)
@@ -16,3 +17,9 @@ Max Burnette, Noah Fahlgren, David LeBauer, David Lee, Cheryl Porter, Geoff Morr
 
 * genomes2fields has simple protocols for a core set of five traits that everyone measures. Also spreadsheet templates and instructions for collecting data.
 * FieldBook field measurements don't say _how_ to measure, but provide a framework for collecting the data.
+
+
+
+### References:
+
+[Github issue 18](https://github.com/terraref/reference-data/issues/18)
