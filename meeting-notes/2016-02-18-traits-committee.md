@@ -19,7 +19,15 @@ Max Burnette, Noah Fahlgren, David LeBauer, David Lee, Cheryl Porter, Geoff Morr
   * G2F has simple protocols for a core set of five traits that everyone measures. Also spreadsheet templates and instructions for collecting data.
 * FieldBook field measurements don't say _how_ to measure, but provide a framework for collecting the data.
 
+### Core Traits?
 
+Some being discussed:
+
+* Biomass (time series)
+* Canopy Architecture (emergence, % cover, LAI, leaf angle, leaf length, leaf number, leaf width)
+* Transpiration (and leaf temperature)
+* Tissue Chemistry carbohydrates, lignin, N
+* Photosynthesis: pigments
 
 ### References:
 
