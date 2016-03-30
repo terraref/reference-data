@@ -1,23 +1,27 @@
 # TERRA-REF Reference Data
 
 Reference data encompasses clear definitions of data formats, semantics, and interfaces, file formats, and representations of space, time, and genetic identity based on existing standards, commonly used file formats, and user needs to make it easier to analyze and exchange data and results. 
-___
-Gitter is an instant messaging and chat room system for developers and users of GitHub repositories.
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/terraref/reference-data?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-Huboard is a Kanban-style interface on top of the GitHub API.
-[![Huboard](http://img.shields.io/badge/Hu-Board-7965cc.svg)](https://huboard.com/terraref/reference-data)
-
-[Open Science Framework](https://osf.io/n532g/) is a scholarly commons to connect the entire research cycle
-___
-Questions?  Contact [David LeBauer](https://github.com/dlebauer)
 
 
-___
-*Project wide - if any code or data do not have clear terms of reuse, please request that the author provide one. We use [UI NCSA Open Source License](https://opensource.org/licenses/NCSA), by default and also recommend [MIT[(https://opensource.org/licenses/MIT) and [BSD](https://opensource.org/licenses/BSD-2-Clause)*
+### Contact:
+
+* [Website](https://terraref.ncsa.illinois.edu)
+* email: dlebauer@illinois.edu
+* [GitHub Issues](https://github.com/terraref/reference-data/issues)
+* [Chat Room](https://gitter.im/terraref/reference-data)
+
+To provide input on the computing pipeline, please visit the [Reference Data GitHub repository](https://github.com/terraref/reference-data).
+
+* [GitHub Issues](https://github.com/terraref/computing-pipeline/issues)
+* [Chat Room](https://gitter.im/terraref/computing-pipeline)
 
 
-___
+
+### Terms of Use
+
+* Project wide - if any code or data do not have clear terms of reuse, please request that the author provide one. We use [UI NCSA Open Source License](https://opensource.org/licenses/NCSA), by default and also recommend [MIT[(https://opensource.org/licenses/MIT) and [BSD](https://opensource.org/licenses/BSD-2-Clause)*
+
+
 <a href="http://creativecommons.org/licenses/by/4.0/" rel=
     "license"><img alt="Creative Commons License" src=
     "https://i.creativecommons.org/l/by/4.0/88x31.png" style=
