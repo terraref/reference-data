@@ -1,4 +1,24 @@
-##Summary
+# How to contribute [DRAFT]
+
+This repository is for discussing the format and content of data products that the TERRA Reference team will produce.
+
+Most of the discussions occur in the form of [GitHub issues](https://github.com/terraref/reference-data/issues). You can ask questions, request new or updated data products, and propose new formats to support there by contacting us in our [chat room](https://gitter.im/terraref/reference-data) or creating a [new issue](https://github.com/terraref/reference-data/issues/new).
+
+## Proposing new data products
+
+Ideally these will be accompanied by open source scripts, code snippets, or pull requests to modify / extend scripts in the https://github.com/terraref/computing-pipeline repository.
+
+## Requesting support for / integration with existing data formats
+
+We have a long list of APIs, databases, and data formats that we plan to ingest, process, and provide access to through the TERRA Ref platform. These are listed in the documentation <!--todo more details here and in documentation-->
+
+## Requesting changes to existing data products
+
+If using our data, please let us know how you access it, and what works / doesn't work.
+
+
+## Code of Conduct
+
 Harassment in code and discussion or violation of physical boundaries is completely unacceptable anywhere in TERRA-REF’s project codebases, issue trackers, chatrooms, mailing lists, meetups, and other events. Violators will be warned by the core team. Repeat violations will result in being blocked or banned by the core team at or before the 3rd violation.
 
 ###In detail
