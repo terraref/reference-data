@@ -1,3 +1,15 @@
+---
+layout: post
+title: "December 2015 Genomic Standards Committee Meeting Notes"
+modified:
+categories: blog
+excerpt:
+tags: []
+image:
+  feature:
+date: 2015-12-11T20:43:38-05:00
+---
+
 # Genomic Data Meeting
 December 11, 2015
 
