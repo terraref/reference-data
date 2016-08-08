@@ -1,0 +1,47 @@
+---
+title: "Budget Estimate"
+author: "David LeBauer"
+date: "October 7, 2015"
+output: html_document
+---
+
+
+
+```{r}
+
+library(data.table)
+library(udunits2)
+### Rates
+
+## Amazon Glacier
+## $0.007 / GB / mo = $84 / TB / y storage + 
+## $0.07 / GB transfer = $70,000 / PB transfer
+
+FOA <- 1 * 365/2 * 4
+fourtb_d <- 1 * 365 * 4
+
+amazon_glacier <- ud.convert(0.007, "month-1", "year-1")*1000
+library(data.table)
+time <- data.table(day = 1:(365*4), doy = rep(1:365, 4), year = rep(1:4, each = 365), rate = 4)
+time[, `:=` (total = cumsum(rate))]
+time[, `:=` (min = cumsum(rate/4),  total = cumsum(rate))]
+time <- data.table(day = 1:(365*4), doy = rep(1:365, 4), year = rep(1:4, each = 365), rate = 4)
+time[, `:=` (min = cumsum(ifelse(doy < 182, rate/4, 0)),  total = cumsum(rate))]
+time
+724*4
+724*8
+time <- data.table(day = 1:(365*4), doy = rep(1:365, 4), year = rep(1:4, each = 365), rate = 4)
+time[, `:=` (min = cumsum(ifelse(doy <= 182, rate/4, 0)),  total = cumsum(rate))]
+time[, `:=` (cost = total * 145)]
+time
+time[, `:=` (cost = total * (145/365))]
+time <- data.table(day = 1:(365*4), doy = rep(1:365, 4), year = rep(1:4, each = 365), rate = 4)
+time[, `:=` (min = cumsum(ifelse(doy <= 182, rate/4, 0)),  total = cumsum(rate))]
+time[, `:=` (cost = total * (145/365))]
+time
+time[, `:=` (total_cost = cumsum(cost))]
+time
+format(time$total_cost, scientific = FALSE, digits = 0)
+time[, list(max(total_cost)), by = year]
+time[, list(storage = max(total_cost) * 95/145, backup = max(total_cost) * 50/145), by = year]
+```
