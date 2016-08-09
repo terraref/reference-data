@@ -1,0 +1,51 @@
+---
+  title: "MAC Field Data"
+author: "David LeBauer"
+date: "June 17, 2016"
+output: html_document
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Height
+
+```{r}
+library(googlesheets)
+(my_sheets <- gs_ls())
+
+metadata_gs <- googlesheets::gs_url("https://docs.google.com/spreadsheets/d/1s-kQc3K0h4-hfwMzKOU_zpRXN5loByIpKW8Rvw76mh0")
+entries <- gs_read(metadata_gs, 'cultivars') %>% 
+  select(genotype = name, Entry)
+
+data_gs <- gs_url("https://docs.google.com/spreadsheets/d/1FQ8_ualom7ZUtr5iKiEn80vHlh9zIYpDxawpaek20Og")
+
+height <- gs_read(data_gs, 'Heights_Full_field_LongFormat') %>% 
+  left_join(entries, by = "Entry") %>% 
+  mutate(Experiment = replace(Experiment, Experiment == "Nght illum", "Night Illumination")) %>% 
+  mutate(Experiment = replace(Experiment, Experiment == "Row#", "Row #"))
+  
+unique(height$Experiment)
+
+ht <- height %>%
+  mutate(site = paste("MAC Field Scanner Field Plot ", Plot, Row_subplot), 
+         date = lubridate::mdy(Date), species = 'Sorghum bicolor',
+         canopy_height  = as.numeric(HtCanopy_cm), 
+         spike_height = as.numeric(HtSpike_cm),
+         treatment = 'Control') %>% 
+  select(site, date, species,
+         treatment, 
+         cultivar = genotype,
+         canopy_height,
+         spike_height) %>%
+  filter(!(is.na(canopy_height) & is.na(spike_height)))
+
+ht1 <- ht %>% filter(is.na(spike_height)) %>% select(-spike_height)
+ht2 <- ht %>% filter(!is.na(spike_height))
+  
+write.csv(ht1, file = 'ht1.csv', row.names = FALSE)
+write.csv(ht2[1:100,], file = 'ht2.csv', row.names = FALSE)
+
+
+```
