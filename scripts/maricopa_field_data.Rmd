@@ -6,16 +6,18 @@ output: html_document
 ---
   
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
 
 ## Height
 
 ```{r}
 library(googlesheets)
+library(dplyr)
 (my_sheets <- gs_ls())
 
 metadata_gs <- googlesheets::gs_url("https://docs.google.com/spreadsheets/d/1s-kQc3K0h4-hfwMzKOU_zpRXN5loByIpKW8Rvw76mh0")
+
 entries <- gs_read(metadata_gs, 'cultivars') %>% 
   select(genotype = name, Entry)
 
@@ -49,3 +51,16 @@ write.csv(ht2[1:100,], file = 'ht2.csv', row.names = FALSE)
 
 
 ```
+
+## Emergence
+
+```{r}
+
+emergence <- gs_read(data_gs, 'Emergence_StandCounts_BAP')
+final_stand_counts <- gs_read(data_gs, 'Final_StandCounts_Full_field') 
+
+#%>% 
+#  left_join(entries, by = "Entry") 
+
+
+
