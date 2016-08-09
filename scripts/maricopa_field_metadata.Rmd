@@ -9,8 +9,38 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Elevation
+# Sites
 
+## Site names
+
+```{r}
+library(googlesheets)
+(my_sheets <- gs_ls())
+metadata_gs <- googlesheets::gs_url("https://docs.google.com/spreadsheets/d/1s-kQc3K0h4-hfwMzKOU_zpRXN5loByIpKW8Rvw76mh0")
+
+sites <- gs_read(metadata_gs, 'sites') %>% 
+  select(sitename)
+
+sitenames <- with(sites, c(sitename, paste0(sitename, " E"), paste0(sitename, " W")))
+
+insert <-  paste0("insert into sites  (sitename, created_at, updated_at) values('", sitenames, "', now(), now());")
+
+writeLines(insert, 'sites.sql')
+```
+
+```sh
+psql -d bety < sites.sql
+```
+
+Link sites to citations
+
+```sh
+insert into citations_sites (citation_id, site_id, created_at, updated_at) select 6000000001, id, now(), now() from sites where sitename like 'MAC%';
+
+insert into citations_sites (citation_id, site_id, created_at, updated_at) select 6000000002, id, now(), now() from sites where sitename like 'MAC%';
+```
+
+## Elevation
 
 ```{r cars}
 library(data.table)
@@ -115,4 +145,13 @@ then insert cultivars (on bety6 / terraref.ncsa.illinois.edu/bety) using
 
 ```sh
 psql -d bety < sorghum_cultivars.sql
+```
+
+## Covariates
+
+For any traits that we upload, an entry in trait_covariate_associations is required. By default, they can all have stand age
+
+```{r}
+insert_tca <- paste0("insert into trait_covariate_associations (trait_variable_id, covariate_variable_id, required) values (", 6000000001:6000000008, ", 343, 'f');")
+writeLines(insert_tca, con = 'trait_covariate_associations.sql')
 ```
