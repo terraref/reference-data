@@ -151,6 +151,7 @@ psql -d bety < sorghum_cultivars.sql
 
 For any traits that we upload, an entry in `trait_covariate_associations` is required. By default, they can all have stand age
 
+
 ```{r}
 insert_tca <- paste0("insert into trait_covariate_associations (trait_variable_id, covariate_variable_id, required) values (", 6000000001:6000000008, ", 343, 'f');")
 writeLines(insert_tca, con = 'trait_covariate_associations.sql')

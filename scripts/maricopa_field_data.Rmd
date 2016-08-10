@@ -6,16 +6,28 @@ output: html_document
 ---
   
 ```{r setup, include=FALSE}
+<<<<<<< HEAD
 knitr::opts_chunk$set(echo = TRUE)
+=======
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+>>>>>>> a054c9a854eac4741163d59a4a0e1ba0d9b84b14
 ```
 
 ## Height
 
 ```{r}
 library(googlesheets)
+<<<<<<< HEAD
 (my_sheets <- gs_ls())
 
 metadata_gs <- googlesheets::gs_url("https://docs.google.com/spreadsheets/d/1s-kQc3K0h4-hfwMzKOU_zpRXN5loByIpKW8Rvw76mh0")
+=======
+library(dplyr)
+(my_sheets <- gs_ls())
+
+metadata_gs <- googlesheets::gs_url("https://docs.google.com/spreadsheets/d/1s-kQc3K0h4-hfwMzKOU_zpRXN5loByIpKW8Rvw76mh0")
+
+>>>>>>> a054c9a854eac4741163d59a4a0e1ba0d9b84b14
 entries <- gs_read(metadata_gs, 'cultivars') %>% 
   select(genotype = name, Entry)
 
@@ -48,4 +60,21 @@ write.csv(ht1, file = 'ht1.csv', row.names = FALSE)
 write.csv(ht2[1:100,], file = 'ht2.csv', row.names = FALSE)
 
 
+<<<<<<< HEAD
 ```
+=======
+```
+
+## Emergence
+
+```{r}
+
+emergence <- gs_read(data_gs, 'Emergence_StandCounts_BAP')
+final_stand_counts <- gs_read(data_gs, 'Final_StandCounts_Full_field') 
+
+#%>% 
+#  left_join(entries, by = "Entry") 
+
+
+
+>>>>>>> a054c9a854eac4741163d59a4a0e1ba0d9b84b14
