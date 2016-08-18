@@ -10,7 +10,7 @@ image:
 date: 2016-03-11T20:43:38-05:00
 ---
 
-# March 2016 Sensor Data Standards Committee Meeting
+# March 11, 2016 Sensor Data Standards Committee Meeting
 
 ## **Participants**
 
