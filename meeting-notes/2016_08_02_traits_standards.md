@@ -9,6 +9,7 @@ image:
   feature:
 date: 2016-08-02T20:43:38-05:00
 ---
+# August 2016 Traits Standards Committee Meeting Notes
 
 ## Participants
 
