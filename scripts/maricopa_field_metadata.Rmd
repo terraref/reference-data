@@ -119,6 +119,23 @@ write.csv(plots, file = '20160421_plots.csv')
 
 ```
 
+Here is an example of how to add lat1 and lon1 for X1 and Y1, add lat2 and lon2 for X2 and Y2 to grid data frame using the projection I provided before.
+
+
+```r
+require(proj4)
+options(digits = 12)
+x1y1=cbind(grid$x1,grid$y1)
+x2y2=cbind(grid$x2,grid$y2)
+proj= '+proj=tmerc +lat_0=0 +lon_0=-111.843479 +k=1 +x_0=12285.092664 +y_0=-3661028.344732 +datum=WGS84 +units=m +no_defs '
+latlon1=project(x1y1, proj, inverse = T, degrees = TRUE, silent = FALSE, ellps.default="sphere")
+latlon2=project(x2y2, proj, inverse = T, degrees = TRUE, silent = FALSE, ellps.default="sphere")
+grid$lon1=latlon1[,1]
+grid$lat1=latlon1[,2]
+grid$lon2=latlon2[,1]
+grid$lat2=latlon2[,2]
+```
+
 
 ## Cultivars
 
