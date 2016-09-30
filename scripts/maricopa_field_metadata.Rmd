@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(googlesheets)
+library(dplyr)
 (my_sheets <- gs_ls())
 metadata_gs <- googlesheets::gs_url("https://docs.google.com/spreadsheets/d/1s-kQc3K0h4-hfwMzKOU_zpRXN5loByIpKW8Rvw76mh0")
 
@@ -59,7 +60,7 @@ boundingbox <- rbind(elevation[longitude > -111.975][latitude == max(latitude)],
                      elevation[longitude < -111.975][latitude == max(latitude)],
                      elevation[longitude > -111.975][latitude == max(latitude)])
 
-write.csv(boundingbox, "/tmp/macboundingbox.csv", row.names = FALSE)
+write.csv(boundingbox, "macboundingbox.csv", row.names = FALSE)
 
 ```
 
@@ -76,6 +77,7 @@ write.csv(boundingbox, "/tmp/macboundingbox.csv", row.names = FALSE)
 
 require(udunits2)
 library(dplyr)
+library(tidyr)
 library(ggplot2)
 
 x_origin = 0 
@@ -95,8 +97,8 @@ x <- x_origin + (1:columns - 1) * dx
 y <- y_origin + (1:ranges - 1) * (length + alley) 
 
 grid <- data.frame(expand.grid(x,y)) %>% 
-  transmute(plot = 1:(ranges*columns), x1 = Var1, y1 = Var2, x2 = x1 + dx, y2 = y1 + dy) %>% 
-  tidyr::gather(key = 'lat', )
+  transmute(plot = 1:(ranges*columns), x1 = Var1, y1 = Var2, x2 = x1 + dx, y2 = y1 + dy) #%>% 
+  #tidyr::gather(key = 'lat', )
 
 
 theme_set(theme_bw())
@@ -110,7 +112,10 @@ ggplot(data = grid) +
 grid2 <- grid %>% gather(key, value = x, starts_with("x")) %>% gather(key2, value = y, starts_with("y"))   %>% select(-starts_with("key"))  %>% arrange(plot) %>% setDT
 
 library(spatstat)
-plots <- grid2[,polygon(as.data.frame(spatstat::bounding.box.xy(x, y))),by=plot]
+library(wellknown)
+plots <- grid2[,wellknown::polygon(as.data.frame(spatstat::bounding.box.xy(x, y))), by=plot] 
+write.csv(grid, file = '20160421_grid.csv')
+write.csv(plots, file = '20160421_plots.csv')
 
 ```
 
