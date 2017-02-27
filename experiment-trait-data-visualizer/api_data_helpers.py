@@ -30,7 +30,7 @@ def get_api_records(endpoint, year, start_month, end_month):
 
 		formatted_month = get_formatted_month(month)
 
-		payload = {'key':'sS8quPK7nt0ySnTFahzDP9VMlGhBqxIqjUKP6SUx',
+		payload = {'key':os.environ.get(BETYdbKey),
 			'date':'~'+ str(year) + '-' + str(formatted_month),
 			'limit':'none'}
 
