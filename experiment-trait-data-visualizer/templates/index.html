@@ -18,14 +18,24 @@
 			<a href="#" class="btn btn-primary btn-lg">Learn More</a>
 			</a>
 		</div>
-		<center>
-			<h1>Traits</h1>
-		</center>
 		<div class="col-md-6 col-md-offset-3">
 			{% for trait in trait_data %}
 			<div class="panel panel-default">
-				<div class="panel-heading">
-					<center><p>{{ trait }}</p></center>
+				<div class="panel-info">
+					<center>
+						{% if trait_data[trait]["variable_data"]["name"] != "" %}
+							<span class="label label-default">Variable Name</span>
+							<p class="panel-info-text">{{ trait_data[trait]["variable_data"]["name"] }}</p>
+						{% endif %}
+						{% if trait_data[trait]["variable_data"]["standard_name"] != "" %}
+							<span class="label label-default">Standard Name</span>
+							<p class="panel-info-text">{{ trait_data[trait]["variable_data"]["standard_name"] }}</p>
+						{% endif %}
+						{% if trait_data[trait]["variable_data"]["description"] != "" %}
+							<span class="label label-default">Description</span>
+							<p class="panel-info-text">{{ trait_data[trait]["variable_data"]["description"] }}</p>
+						{% endif %}
+					</center>
 				</div>
 				<div class="panel-content">
 					<table class="table table-bordered table-striped">

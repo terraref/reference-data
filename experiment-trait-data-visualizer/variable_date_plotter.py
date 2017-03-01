@@ -1,4 +1,4 @@
-from trait_data_retrieval import get_trait_data
+from api_data_retrieval.trait_data_retrieval import get_trait_data
 import matplotlib.pyplot as plt
 
 def plot_dates(year, start_month, end_month):

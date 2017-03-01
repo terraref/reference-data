@@ -4,6 +4,13 @@ body {
 .panel {
 	border-radius: 2px;
 }
+.panel-info {
+	margin: 20px;
+	font-size: 18px;
+}
+.panel-info-text {
+	padding-top: 5px;
+}
 .panel-content {
 	margin: 25px;
 	font-size: 16px;

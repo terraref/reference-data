@@ -14,15 +14,13 @@ def make_api_request(endpoint, id, payload_add):
 	return api_data
 
 def get_formatted_month(month):
-
 	if month < 10:
 		return '0' + str(month)
 	return str(month)
 
 def get_records_file_name(endpoint, year, start_month, end_month):
-
 	return 'api_data_cache/' + endpoint + '_' + str(year) + '-' + get_formatted_month(start_month) + '-' + \
-			get_formatted_month(end_month) + '.txt'
+			get_formatted_month(end_month)
 
 def get_records(endpoint, year, start_month, end_month):
 

@@ -1,4 +1,5 @@
 from .api_data_helpers import get_trait_records
+from .variable_data_retrieval import get_variable_data
 
 def format_date(date):
 
@@ -14,6 +15,7 @@ def get_trait_data(year, start_month, end_month):
 	for trait in all_traits:
 
 		trait_variable_id = trait["trait"]["variable_id"]
+
 		trait_method_id = trait["trait"]["method_id"]
 		trait_created_at = trait["trait"]["created_at"]
 
@@ -40,4 +42,10 @@ def get_trait_data(year, start_month, end_month):
 			else:
 				variable_data[ trait_variable_id ]["methods"][trait_method_id] += 1;
 
+	for trait_variable in variable_data:
+		
+		variable_data[ trait_variable ]["variable_data"] = get_variable_data(trait_variable)
+
 	return variable_data
+
+get_trait_data(2016, 8, 12)
