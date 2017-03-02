@@ -12,13 +12,12 @@
 	<div class="container">
 		<div class="jumbotron page-header">
 			<h1 class="display-3">Sorghum Season 2 Summary</h1>
-			<p>This is a summary of trait data collected during the 
-				Sorghum Season 2 Experiment</p>
 			<hr>
 			<a href="#" class="btn btn-primary btn-lg">Learn More</a>
 			</a>
 		</div>
 		<div class="col-md-6 col-md-offset-3">
+			<center><h2 class="title">Observations</h2></center>
 			{% for trait in trait_data %}
 			<div class="panel panel-default">
 				<div class="panel-info">
@@ -57,6 +56,22 @@
 				</div>
 			</div>
 			{% endfor %}
+
+			<center><h2 class="title">Managements</h2></center>
+			<ul class="list-group">
+				{% for management in management_data %}
+					<li class="list-group-item">
+						<p><span class="label label-default">Date</span>
+						{{ management.date }}</p>
+						<p><span class="label label-default">Type</span>
+						{{ management.type }}</p>
+						<br>
+						<p>{{ management.notes }}</p>
+					</li>
+				{% endfor %}
+			</ul>
 		</div>
 	</div>
 {% endblock %}
+
+

@@ -3,10 +3,11 @@ body {
 }
 .panel {
 	border-radius: 2px;
+	overflow: auto;
 }
 .panel-info {
 	margin: 20px;
-	font-size: 18px;
+	font-size: 20px;
 }
 .panel-info-text {
 	padding-top: 5px;
@@ -14,4 +15,11 @@ body {
 .panel-content {
 	margin: 25px;
 	font-size: 16px;
+}
+.label {
+	font-size: 10px;
+}
+.title {
+	border: 1px solid;
+	padding: 10px;
 }
