@@ -23,3 +23,8 @@ body {
 	border: 1px solid;
 	padding: 10px;
 }
+.list-group-item-content {
+	margin: 15px;
+}
+.row-total {
+}

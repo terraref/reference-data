@@ -4,7 +4,7 @@ import os
 
 def make_api_request(endpoint, id, payload_add):
 
-	payload = {'key':os.environ.get('BETYdbKey')}
+	payload = {'key':os.environ.get('BETYdbKey'), 'unchecked':'true'}
 	payload.update(payload_add)
 	api_response = requests.get('https://terraref.ncsa.illinois.edu/bety/api/beta/' + endpoint + '/' + str(id),
 			auth=('nickheyek', os.environ.get('BETYdbPass')),

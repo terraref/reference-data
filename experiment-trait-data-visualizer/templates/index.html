@@ -11,10 +11,7 @@
 {% block content %}
 	<div class="container">
 		<div class="jumbotron page-header">
-			<h1 class="display-3">Sorghum Season 2 Summary</h1>
-			<hr>
-			<a href="#" class="btn btn-primary btn-lg">Learn More</a>
-			</a>
+			<h1>Sorghum Season 2 Summary</h1>
 		</div>
 		<div class="col-md-6 col-md-offset-3">
 			<center><h2 class="title">Observations</h2></center>
@@ -48,9 +45,53 @@
 							{% for date in trait_data[trait]["dates"] %}
 								<tr>
 									<td>{{ date }}</td>
-									<td>{{ trait_data[trait]["dates"][date] }}</td>
+									<td>{{ trait_data[trait]["dates"][date]["count"] }}</td>
 								</tr>
 							{% endfor %}
+							<tr class="active">
+								<td>Total</td>
+								<td>{{ trait_data[trait]["count"] }}
+							</tr>
+						</tbody>
+					</table>
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>Created At</th>
+								<th>Records</th>
+							<tr>
+						</thead>
+						<tbody>
+							{% for date in trait_data[trait]["created_at_dates"] %}
+								<tr>
+									<td>{{ date }}</td>
+									<td>{{ trait_data[trait]["created_at_dates"][date] }}</td>
+								</tr>
+							{% endfor %}
+							<tr class="active">
+								<td>Total</td>
+								<td>{{ trait_data[trait]["count"] }}
+							</tr>
+						</tbody>
+					</table>
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>Methods</th>
+								<th>Records</th>
+							<tr>
+						</thead>
+						<tbody>
+							{% for method in trait_data[trait]["methods"] %}
+								<tr>
+									<td>{{ method }}</td>
+									<td>{{ trait_data[trait]["methods"][method] }}</td>
+								</tr>
+							{% endfor %}
+							<tr class="active">
+								<td>Total</td>
+								<td>{{ trait_data[trait]["count"] }}
+							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -61,12 +102,14 @@
 			<ul class="list-group">
 				{% for management in management_data %}
 					<li class="list-group-item">
-						<p><span class="label label-default">Date</span>
-						{{ management.date }}</p>
-						<p><span class="label label-default">Type</span>
-						{{ management.type }}</p>
-						<br>
-						<p>{{ management.notes }}</p>
+						<div class="list-group-item-content">
+							<p><span class="label label-default">Date</span>
+							{{ management.date }}</p>
+							<p><span class="label label-default">Type</span>
+							{{ management.type }}</p>
+							<br>
+							<p>{{ management.notes }}</p>
+						</div>
 					</li>
 				{% endfor %}
 			</ul>
