@@ -2,3 +2,4 @@ __pycache__/
 *.txt
 venv/
 api_data_cache/
+static/charts/
