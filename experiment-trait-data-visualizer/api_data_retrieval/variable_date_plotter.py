@@ -24,26 +24,26 @@ def plot_dates(year, start_month, end_month):
 		units = trait_data[trait]["variable_data"]["units"]
 
 		if variable_standard_name:
-			chart_title = variable_standard_name
+			plot_title = variable_standard_name
 		else:
-			chart_title = variable_name
+			plot_title = variable_name
 
-		chart_title += '\n' + str(units)
+		y_title = str(units)
 
 		for date in date_dict:
 			date_labels.append(date)
 		date_labels.sort()
 
 		
-		chart = pygal.Box(show_legend=False, style=same_color_style,
-			title=chart_title, show_y_guides=False)
+		plot = pygal.Box(show_legend=False, style=same_color_style,
+			title=plot_title, y_title=y_title, show_y_guides=False)
 
 		for date in range(0, len(date_labels)):
 			date_means = []
 			for mean in date_dict[date_labels[date]]["means"]:
 				date_means.append({'value':mean, 'color':'#1a6d2f'})
 
-			chart.add('', date_means)
+			plot.add('', date_means, label="test")
 
-		chart.x_labels = date_labels
-		chart.render_to_file('static/charts/chart_' + str(trait) + '.svg')
+		plot.x_labels = date_labels
+		plot.render_to_file('static/plots/plot_' + str(trait) + '.svg')

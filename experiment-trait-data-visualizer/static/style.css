@@ -1,20 +1,13 @@
 body {
 	font-family: 'Open Sans', sans-serif;
 }
+.table {
+	width: 500px;
+	margin: auto;
+}
 .panel {
 	border-radius: 2px;
 	overflow: auto;
-}
-.panel-info {
-	margin: 20px;
-	font-size: 20px;
-}
-.panel-info-text {
-	padding-top: 5px;
-}
-.panel-content {
-	margin: 25px;
-	font-size: 16px;
 }
 .label {
 	font-size: 10px;
@@ -22,9 +15,11 @@ body {
 .title {
 	border: 1px solid;
 	padding: 10px;
+	width: 300px;
 }
 .list-group-item-content {
 	margin: 15px;
 }
-.row-total {
+.plot {
+	margin: 25px;
 }

@@ -18,7 +18,7 @@
 			{% for trait in trait_data %}
 			<div class="panel panel-default">
 				<div class="panel-content">
-					<embed type="image/svg+xml" src="{{ url_for('static', filename='charts/chart_' + trait|string + '.svg') }}" />
+					<embed class="plot" type="image/svg+xml" src="{{ url_for('static', filename='plots/plot_' + trait|string + '.svg') }}" />
 					<table class="table table-bordered table-striped">
 						<thead>
 							<tr>
@@ -31,46 +31,6 @@
 								<tr>
 									<td>{{ date }}</td>
 									<td>{{ trait_data[trait]["dates"][date]["count"] }}</td>
-								</tr>
-							{% endfor %}
-							<tr class="active">
-								<td>Total</td>
-								<td>{{ trait_data[trait]["count"] }}
-							</tr>
-						</tbody>
-					</table>
-					<table class="table table-bordered table-striped">
-						<thead>
-							<tr>
-								<th>Created At</th>
-								<th>Records</th>
-							<tr>
-						</thead>
-						<tbody>
-							{% for date in trait_data[trait]["created_at_dates"] %}
-								<tr>
-									<td>{{ date }}</td>
-									<td>{{ trait_data[trait]["created_at_dates"][date] }}</td>
-								</tr>
-							{% endfor %}
-							<tr class="active">
-								<td>Total</td>
-								<td>{{ trait_data[trait]["count"] }}
-							</tr>
-						</tbody>
-					</table>
-					<table class="table table-bordered table-striped">
-						<thead>
-							<tr>
-								<th>Methods</th>
-								<th>Records</th>
-							<tr>
-						</thead>
-						<tbody>
-							{% for method in trait_data[trait]["methods"] %}
-								<tr>
-									<td>{{ method }}</td>
-									<td>{{ trait_data[trait]["methods"][method] }}</td>
 								</tr>
 							{% endfor %}
 							<tr class="active">
@@ -101,5 +61,3 @@
 		</div>
 	</div>
 {% endblock %}
-
-
