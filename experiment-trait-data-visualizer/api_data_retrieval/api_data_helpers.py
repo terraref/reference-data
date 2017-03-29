@@ -47,6 +47,9 @@ def get_records(endpoint, year, start_month, end_month):
 		records += api_data["data"]
 		record_count += api_data["metadata"]["count"]
 
+	if not os.path.exists('api_data_cache'):
+		os.makedirs('api_data_cache')
+		
 	with open(cache_filename, 'w') as cache_file:
 		json.dump(records, cache_file)
 
