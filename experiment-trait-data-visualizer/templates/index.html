@@ -19,7 +19,7 @@
 			<div class="panel panel-default">
 				<div class="panel-content">
 					<embed class="plot" type="image/svg+xml" src="{{ url_for('static', filename='plots/plot_' + trait|string + '.svg') }}" />
-					<table class="table table-bordered table-striped">
+					<center><table class="table table-bordered table-striped">
 						<thead>
 							<tr>
 								<th>Date</th>
@@ -35,29 +35,34 @@
 							{% endfor %}
 							<tr class="active">
 								<td>Total</td>
-								<td>{{ trait_data[trait]["count"] }}
+								<td>{{ trait_data[trait]["count"] }}</td>
 							</tr>
 						</tbody>
-					</table>
+					</table></center>
 				</div>
 			</div>
 			{% endfor %}
-
+		</div>
+		<div class="col-md-4 col-md-offset-4">
 			<center><h2 class="title">Managements</h2></center>
-			<ul class="list-group">
-				{% for management in management_data %}
-					<li class="list-group-item">
+				<ul class="managements-timeline">
+					{% for management in management_data %}
+					<div class="relative">
+						<span class='circle'></span>
+						<h3 class="timeline-date">
+							{{ management.date }}
+						</h3>
+					<div>
+
+					<li class="timeline-li">
 						<div class="list-group-item-content">
-							<p><span class="label label-default">Date</span>
-							{{ management.date }}</p>
-							<p><span class="label label-default">Type</span>
-							{{ management.type }}</p>
+							<h3>{{ management.type }}</h3>
 							<br>
 							<p>{{ management.notes }}</p>
 						</div>
 					</li>
-				{% endfor %}
-			</ul>
+					{% endfor %}
+				</ul>
 		</div>
 	</div>
 {% endblock %}

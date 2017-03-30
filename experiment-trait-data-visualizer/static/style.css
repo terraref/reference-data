@@ -3,7 +3,7 @@ body {
 }
 .table {
 	width: 500px;
-	margin: auto;
+	margin: 25px; 
 }
 .panel {
 	border-radius: 2px;
@@ -22,4 +22,34 @@ body {
 }
 .plot {
 	margin: 25px;
+}
+.timeline-container {
+}
+.managements-timeline {
+	list-style: none;
+	border-left: 10px solid green;
+	margin: auto;
+}
+.timeline-li {
+	margin: 40px 0;
+	padding: 10px;
+	border: 1px solid black;
+	max-width: 300px;
+	position: relative;
+}
+.timeline-date {
+	position: absolute;
+	left: -125px;
+	margin-top: 5px;
+}
+.circle {
+	position: absolute;
+	margin-top: 10px;
+	left: 10px;
+	width: 20px ;  
+	height: 20px;
+	background: white;
+	border: 2px solid green;
+	border-radius: 50%;
+	display: block;
 }

@@ -1,3 +1,4 @@
+import os
 from .trait_data_retrieval import get_trait_data
 import pygal
 from pygal.style import Style 
@@ -46,4 +47,7 @@ def plot_dates(year, start_month, end_month):
 			plot.add('', date_means, label="test")
 
 		plot.x_labels = date_labels
+
+		if not os.path.exists('static/plots'):
+			os.makedirs('static/plots')
 		plot.render_to_file('static/plots/plot_' + str(trait) + '.svg')
