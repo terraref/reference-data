@@ -18,27 +18,12 @@
 			{% for trait in trait_data %}
 			<div class="panel panel-default">
 				<div class="panel-content">
-					<embed class="plot" type="image/svg+xml" src="{{ url_for('static', filename='plots/plot_' + trait|string + '.svg') }}" />
-					<center><table class="table table-bordered table-striped">
-						<thead>
-							<tr>
-								<th>Date</th>
-								<th>Records</th>
-							<tr>
-						</thead>
-						<tbody>
-							{% for date in trait_data[trait]["dates"] %}
-								<tr>
-									<td>{{ date }}</td>
-									<td>{{ trait_data[trait]["dates"][date]["count"] }}</td>
-								</tr>
-							{% endfor %}
-							<tr class="active">
-								<td>Total</td>
-								<td>{{ trait_data[trait]["count"] }}</td>
-							</tr>
-						</tbody>
-					</table></center>
+					<embed class="mean_plot" type="image/svg+xml"
+						src="{{ url_for('static', filename='plots/plot_' + trait|string + '_' + 
+							year|string + '_' + start_month|string + '_' + end_month|string + '.svg')}}" />
+					<center><embed class="count_plot" type="image/svg+xml"
+						src="{{ url_for('static', filename='plots/countplot_' + trait|string + '_' + 
+							year|string + '_' + start_month|string + '_' + end_month|string + '.svg')}}" /></center>
 				</div>
 			</div>
 			{% endfor %}

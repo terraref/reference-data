@@ -10,11 +10,17 @@ boostrap = Bootstrap(app)
 
 @app.route('/')
 def data_summary():
-	trait_data = get_trait_data(2016, 8, 12)
-	management_data = get_management_data(2016, 8, 12)
-	plot_dates(2016, 8, 12)
 
-	return render_template('index.html', trait_data=trait_data, management_data=management_data)
+	year = 2016
+	start_month = 8
+	end_month = 12
+
+	trait_data = get_trait_data(year, start_month, end_month)
+	management_data = get_management_data(year, start_month, end_month)
+	plot_dates(year, start_month, end_month)
+
+	return render_template('index.html', trait_data=trait_data, management_data=management_data, 
+											year=year, start_month=start_month, end_month=end_month)
 
 if __name__ == '__main__':
 	app.run()

@@ -20,8 +20,11 @@ body {
 .list-group-item-content {
 	margin: 15px;
 }
-.plot {
+.mean_plot {
 	margin: 25px;
+}
+.count_plot {
+	height: 300px;
 }
 .timeline-container {
 }
