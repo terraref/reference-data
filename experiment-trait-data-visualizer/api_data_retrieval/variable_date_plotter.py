@@ -5,17 +5,11 @@ from pygal.style import Style
 
 mean_style = Style(background='transparent',
 							colors=('#000000','#000000'),
+							font_family='googlefont:Open Sans',
 							title_font_size=24,
-							value_font_size=20,
+							value_font_size=32,
 							major_label_font_size=16,
 							label_font_size=16)
-
-count_style = Style(background='transparent',
-					colors=('#000000','#000000'),
-					title_font_size=24,
-					value_font_size=16,
-					major_label_font_size=16,
-					label_font_size=16)
 
 def get_mean_plot_filename(trait, year, start_month, end_month):
 	return 'static/plots/plot_' + str(trait) + '_' + str(year) + '_' + str(start_month) + '_' + str(end_month) + '.svg'
@@ -51,25 +45,28 @@ def plot_dates(year, start_month, end_month):
 				date_labels.append(date)
 			date_labels.sort()
 
-			
-			mean_plot = pygal.Box(show_legend=False, style=mean_style,
+			x_label_rotation = 0
+			if len(date_labels) >= 5:
+				x_label_rotation = 20
+
+			mean_plot_title = mean_plot_title.replace('_', ' ').title()
+			units = units.replate('_', ' ')
+			mean_plot = pygal.Box(show_legend=False, style=mean_style, x_label_rotation=x_label_rotation,
 				title=mean_plot_title, y_title=units, show_y_guides=False)
 
-			count_plot = pygal.Bar(show_legend=False, style=count_style, title='Records Collected',
-							show_y_guides=False)
 
 			for date in range(0, len(date_labels)):
 				date_label = date_labels[date]
 				date_means = []
+				count = date_dict[date_label]["count"]
 				for mean in date_dict[date_label]["means"]:
-					date_means.append({'value':mean, 'color':'#1a6d2f'})
+					date_means.append({'value':mean, 'color':'#1a6d2f', 'label': 'Records: ' + str(count)})
 
-				mean_plot.add('', date_means, label="test")
-				count_plot.add(date_label, date_dict[date_label]["count"])
+				mean_plot.add('', date_means)
 
-			mean_plot.x_labels = date_labels
+			if len(date_labels) < 20:
+				mean_plot.x_labels = date_labels
 
 			if not os.path.exists('static/plots'):
 				os.makedirs('static/plots')
 			mean_plot.render_to_file(mean_plot_filename)
-			count_plot.render_to_file(get_count_plot_filename(trait, year, start_month, end_month))

@@ -9,12 +9,23 @@
 {% block title %}Trait Data Summary{% endblock %}
 
 {% block content %}
+	<div class="nav">
+		<p class="main-title">BETYdb Experiment Data</p>
+	</div>
 	<div class="container">
-		<div class="jumbotron page-header">
-			<h1>Sorghum Season 2 Summary</h1>
-		</div>
+		<center>
+			<div class="summary">
+				<div class="summary-container">
+					<img class="summary-icon" src="{{ url_for('static', filename='icons/experiment-icon.png') }}">
+					<span class="summary-label">Experiment</span><br>
+					<p class="summary-info">Sorghum Season 2</p>
+					<img class="summary-icon" src="{{ url_for('static', filename='icons/dates-icon.png') }}">
+					<span class="summary-label">Dates</span><br>
+					<p class="summary-info">2016-08 - 2016-12</p>
+				</div>
+			</div>
+		</center>
 		<div class="col-md-10 col-md-offset-1">
-			<center><h2 class="title">Observations</h2></center>
 			{% for trait in trait_data %}
 			<div class="panel panel-default">
 				<div class="panel-content">
