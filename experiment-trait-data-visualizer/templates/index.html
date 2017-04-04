@@ -13,34 +13,21 @@
 		<p class="main-title">BETYdb Experiment Data</p>
 	</div>
 	<div class="container">
-		<center>
-			<div class="summary">
-				<div class="summary-container">
-					<img class="summary-icon" src="{{ url_for('static', filename='icons/experiment-icon.png') }}">
-					<span class="summary-label">Experiment</span><br>
-					<p class="summary-info">Sorghum Season 2</p>
-					<img class="summary-icon" src="{{ url_for('static', filename='icons/dates-icon.png') }}">
-					<span class="summary-label">Dates</span><br>
-					<p class="summary-info">2016-08 - 2016-12</p>
-				</div>
-			</div>
-		</center>
-		<div class="col-md-10 col-md-offset-1">
-			{% for trait in trait_data %}
-			<div class="panel panel-default">
-				<div class="panel-content">
-					<embed class="mean_plot" type="image/svg+xml"
-						src="{{ url_for('static', filename='plots/plot_' + trait|string + '_' + 
-							year|string + '_' + start_month|string + '_' + end_month|string + '.svg')}}" />
-					<center><embed class="count_plot" type="image/svg+xml"
-						src="{{ url_for('static', filename='plots/countplot_' + trait|string + '_' + 
-							year|string + '_' + start_month|string + '_' + end_month|string + '.svg')}}" /></center>
-				</div>
-			</div>
-			{% endfor %}
-		</div>
-		<div class="col-md-4 col-md-offset-4">
-			<center><h2 class="title">Managements</h2></center>
+			
+		<ol class="timeline">
+		  {% for management in management_data %}
+		  	<li style="margin-left: {{ management.timeline_dist }}px;">
+		   		<strong>{{ management.type }}</strong>
+		    	<div class="details">
+		    		<strong>{{ management.date }}</strong><br>
+		      		{{ management.notes }}
+		      		{{ management.timeline_dist }}
+		    	</div>
+		  	</li>
+		  {% endfor %}
+		</ol>
+		<div class="col-md-6 col-md-offset-3">
+			<!--<center><h2 class="title">Managements</h2></center>
 				<ul class="managements-timeline">
 					{% for management in management_data %}
 					<div class="relative">
@@ -58,7 +45,33 @@
 						</div>
 					</li>
 					{% endfor %}
-				</ul>
+				</ul>-->
+		</div>
+		<center>
+			<!--<div class="summary">
+				<div class="summary-container">
+					<img class="summary-icon" src="{{ url_for('static', filename='icons/experiment-icon.png') }}">
+					<span class="summary-label">Experiment</span><br>
+					<p class="summary-info">Sorghum Season 2</p>
+					<img class="summary-icon" src="{{ url_for('static', filename='icons/dates-icon.png') }}">
+					<span class="summary-label">Dates</span><br>
+					<p class="summary-info">2016-08 - 2016-12</p>
+				</div>
+			</div>-->
+		</center>
+		<div class="col-md-10 col-md-offset-1">
+			{% for trait in trait_data %}
+			<div class="panel panel-default">
+				<div class="panel-content">
+					<embed class="mean_plot" type="image/svg+xml"
+						src="{{ url_for('static', filename='plots/plot_' + trait|string + '_' + 
+							year|string + '_' + start_month|string + '_' + end_month|string + '.svg')}}" />
+					<center><embed class="count_plot" type="image/svg+xml"
+						src="{{ url_for('static', filename='plots/countplot_' + trait|string + '_' + 
+							year|string + '_' + start_month|string + '_' + end_month|string + '.svg')}}" /></center>
+				</div>
+			</div>
+			{% endfor %}
 		</div>
 	</div>
 {% endblock %}
