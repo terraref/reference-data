@@ -9,3 +9,5 @@ The code for generating these visualizations is in api_data_retrieval/variable_d
 
 The web interface is served as a [Flask](http://flask.pocoo.org/) application.
 It serves svgs rendered by Pygal for each variable, as well as a timeline made from data in the managements enpoint of the BETYdb API.
+
+The dependencies can be found in requirements.txt, install with 'pip install -r requirements.txt'
