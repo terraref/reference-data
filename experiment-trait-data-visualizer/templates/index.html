@@ -13,42 +13,8 @@
 		<p class="main-title">BETYdb Experiment Data</p>
 	</div>
 	<div class="container">
-			
-		<ol class="timeline">
-		  {% for management in management_data %}
-		  	<li style="margin-left: {{ management.timeline_dist }}px;">
-		   		<strong>{{ management.type }}</strong>
-		    	<div class="details">
-		    		<strong>{{ management.date }}</strong><br>
-		      		{{ management.notes }}
-		      		{{ management.timeline_dist }}
-		    	</div>
-		  	</li>
-		  {% endfor %}
-		</ol>
-		<div class="col-md-6 col-md-offset-3">
-			<!--<center><h2 class="title">Managements</h2></center>
-				<ul class="managements-timeline">
-					{% for management in management_data %}
-					<div class="relative">
-						<span class='circle'></span>
-						<h3 class="timeline-date">
-							{{ management.date }}
-						</h3>
-					<div>
-
-					<li class="timeline-li">
-						<div class="list-group-item-content">
-							<h3>{{ management.type }}</h3>
-							<br>
-							<p>{{ management.notes }}</p>
-						</div>
-					</li>
-					{% endfor %}
-				</ul>-->
-		</div>
 		<center>
-			<!--<div class="summary">
+			<div class="summary">
 				<div class="summary-container">
 					<img class="summary-icon" src="{{ url_for('static', filename='icons/experiment-icon.png') }}">
 					<span class="summary-label">Experiment</span><br>
@@ -57,8 +23,23 @@
 					<span class="summary-label">Dates</span><br>
 					<p class="summary-info">2016-08 - 2016-12</p>
 				</div>
-			</div>-->
+			</div>
 		</center>
+		<ol class="timeline">
+		  {% for management_date in management_data %}
+		  	<li style="margin-left: {{ management_data[management_date].timeline_dist * 4}}px;">
+		  		<strong>{{ management_date }}</strong>
+		    	<div class="details">
+		    	{% for entry in management_data[management_date].entries %}
+		    		<strong>{{ entry.type}}</strong><br>
+		      		{{ entry.notes }}
+		      		<br>
+		      	{% endfor %}
+		    	</div>
+		  	</li>
+		  {% endfor %}
+		</ol>
+		
 		<div class="col-md-10 col-md-offset-1">
 			{% for trait in trait_data %}
 			<div class="panel panel-default">
