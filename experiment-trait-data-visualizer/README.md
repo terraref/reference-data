@@ -1,4 +1,5 @@
-Experiment Trait Data Visualizer: A web interface for exploring BETYdb data.
+# Experiment Trait Data Visualizer
+### A web interface for exploring BETYdb data.
 
 The Experiment Trait Data Visualizer receives data from the [BETYdb API](https://pecan.gitbooks.io/betydb-data-access/content/).
 The code for retrieving and handling this data can be found in the api_data_retrieval directory.
