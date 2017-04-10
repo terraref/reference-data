@@ -12,5 +12,6 @@ It serves svgs rendered by Pygal for each variable, as well as a timeline made f
 
 To run on development server:
 
-`pip install -r requirements.txt
-python3 app.py`
+`pip install -r requirements.txt`
+
+`python3 app.py`
