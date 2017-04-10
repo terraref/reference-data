@@ -28,8 +28,11 @@
 		<ol class="timeline">
 		  {% for management_date in management_data %}
 		  	<li style="margin-left: {{ management_data[management_date].timeline_dist * 4}}px;">
-		  		<strong>{{ management_date }}</strong>
+		  		{% for entry in management_data[management_date].entries %}
+		  			<span class="timeline-type">{{ entry.type }}</span>
+		  		{% endfor %}
 		    	<div class="details">
+		    	<strong>{{ management_date }}</strong><br>
 		    	{% for entry in management_data[management_date].entries %}
 		    		<strong>{{ entry.type}}</strong><br>
 		      		{{ entry.notes }}

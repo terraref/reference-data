@@ -101,34 +101,34 @@ li {
 	position: relative;
 	top: -35px;
 	margin-right: 0px;
-	display: inline-block;
+	display: inline;
 	float: left;
 	width: 35px;
 	transform: rotate(-45deg);
-	font-size: 14px;
+	font-size: 16px;
+	white-space: nowrap;
 }
 li::before {
 	content: "";
 	position: absolute;
 	top: 3px;
 	left: -28px;
-	display: block;
 	width: 6px;
 	height: 6px;
 	border: 4px solid #1a6d2f;
 	border-radius: 10px;
 }
-
 .details {
 	display: none;
 	position: absolute;
 	width: 200px;
-	top: 0;
+	top: 25px;
 	left: -200px;
 	border: 1px solid #000000;
 	background: #ffffff;
 	transform: rotate(45deg);
 	padding: 10px;
+	white-space: normal;
 }
 
 li:hover {

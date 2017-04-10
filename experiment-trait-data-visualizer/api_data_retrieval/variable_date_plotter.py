@@ -50,7 +50,7 @@ def plot_dates(year, start_month, end_month):
 				x_label_rotation = 20
 
 			mean_plot_title = mean_plot_title.replace('_', ' ').title()
-			units = units.replate('_', ' ')
+			units = units.replace('_', ' ')
 			mean_plot = pygal.Box(show_legend=False, style=mean_style, x_label_rotation=x_label_rotation,
 				title=mean_plot_title, y_title=units, show_y_guides=False)
 
@@ -64,8 +64,7 @@ def plot_dates(year, start_month, end_month):
 
 				mean_plot.add('', date_means)
 
-			if len(date_labels) < 20:
-				mean_plot.x_labels = date_labels
+			mean_plot.x_labels = date_labels
 
 			if not os.path.exists('static/plots'):
 				os.makedirs('static/plots')
