@@ -96,11 +96,9 @@ body {
 	border-left: 20px solid #1a6d2f;
   	border-radius: 3px;
 }
-
 li {
 	position: relative;
 	top: -35px;
-	margin-right: 0px;
 	display: inline;
 	float: left;
 	width: 35px;
@@ -121,16 +119,16 @@ li::before {
 .details {
 	display: none;
 	position: absolute;
-	width: 200px;
-	top: 25px;
+	width: 300px;
+	top: 50px;
 	left: -200px;
 	border: 1px solid #000000;
 	background: #ffffff;
 	transform: rotate(45deg);
 	padding: 10px;
 	white-space: normal;
+	z-index: 999;
 }
-
 li:hover {
 	cursor: pointer;
 }
