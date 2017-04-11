@@ -1,10 +1,11 @@
 from .api_data_helpers import get_trait_records
 from .variable_data_retrieval import get_variable_data
+import datetime
 
 def format_date(date):
 
-	date_time = date.split('T')
-	return date_time[0]
+	date_string = date.split('T')[0]
+	return datetime.datetime.strptime(date_string, '%Y-%m-%d').date()
 
 def get_trait_data(year, start_month, end_month):
 
@@ -67,4 +68,3 @@ def get_trait_data(year, start_month, end_month):
 
 	return variable_data
 
-get_trait_data(2016, 8, 12)

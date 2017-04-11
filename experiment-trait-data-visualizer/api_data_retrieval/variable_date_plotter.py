@@ -17,29 +17,27 @@ def get_mean_plot_filename(trait, year, start_month, end_month):
 def get_count_plot_filename(trait, year, start_month, end_month):
 	return 'static/plots/countplot_' + str(trait) + '_' + str(year) + '_' + str(start_month) + '_' + str(end_month) + '.svg'
 
+	
 def plot_dates(year, start_month, end_month):
 
 	trait_data = get_trait_data(year, start_month, end_month)
-	traits = [trait for trait in trait_data]
 
-
-	for trait in traits:
+	for trait in trait_data:
 
 		mean_plot_filename = get_mean_plot_filename(trait, year, start_month, end_month)
+
 		if not os.path.exists(mean_plot_filename):
 
 			date_labels = []
 			date_dict = trait_data[trait]["dates"]
 			variable_name = trait_data[trait]["variable_data"]["name"]
 			variable_standard_name = trait_data[trait]["variable_data"]["standard_name"]
-			units = trait_data[trait]["variable_data"]["units"]
+			units = str(trait_data[trait]["variable_data"]["units"]).replace('_', ' ')
 
 			if variable_standard_name:
 				mean_plot_title = variable_standard_name
 			else:
 				mean_plot_title = variable_name
-
-			units = str(units)
 
 			for date in date_dict:
 				date_labels.append(date)
@@ -50,10 +48,8 @@ def plot_dates(year, start_month, end_month):
 				x_label_rotation = 20
 
 			mean_plot_title = mean_plot_title.replace('_', ' ').title()
-			units = units.replace('_', ' ')
 			mean_plot = pygal.Box(show_legend=False, style=mean_style, x_label_rotation=x_label_rotation,
 				title=mean_plot_title, y_title=units, show_y_guides=False)
-
 
 			for date in range(0, len(date_labels)):
 				date_label = date_labels[date]
