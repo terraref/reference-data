@@ -13,8 +13,8 @@ body {
 }
 .summary {
 	position: relative;
-	width: 500px;
-	height: 300px;
+	width: 400px;
+	height: 250px;
 	padding-top: 50px;
 	border-radius: 2px;
 	background: #d6d6d6;
@@ -25,7 +25,7 @@ body {
 	text-align: left;
 }
 .summary-label {
-	font-size: 20px;
+	font-size: 16px;
 	padding-top: 5px;
 }
 .summary-icon {
@@ -34,7 +34,7 @@ body {
 .summary-info {
 	margin-top: -5px;
 	margin-left: 48px;
-	font-size: 24px;
+	font-size: 18px;
 	font-weight: bold;
 }
 .main-title {
@@ -98,13 +98,14 @@ body {
 }
 li {
 	position: relative;
-	top: -35px;
+	top: -30px;
 	display: inline;
 	float: left;
-	width: 35px;
+	width: 20px;
 	transform: rotate(-45deg);
 	font-size: 16px;
 	white-space: nowrap;
+	margin: 0;
 }
 li::before {
 	content: "";
@@ -120,11 +121,9 @@ li::before {
 	display: none;
 	position: absolute;
 	width: 300px;
-	top: 50px;
-	left: -200px;
+	top: 20px;
 	border: 1px solid #000000;
 	background: #ffffff;
-	transform: rotate(45deg);
 	padding: 10px;
 	white-space: normal;
 	z-index: 999;
@@ -139,7 +138,7 @@ li:hover::before {
 	height: 8px;
 	border-width: 5px;
 }
-li:hover .details {
+li:hover + .details {
 	display: block;
 	color: #000000;
 }

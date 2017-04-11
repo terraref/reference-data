@@ -36,10 +36,6 @@ def plot_dates(start_date, end_date):
 			else:
 				mean_plot_title = variable_name
 
-			for date in date_dict:
-				date_labels.append(date)
-			date_labels.sort()
-
 			x_label_rotation = 0
 			if len(date_labels) >= 5:
 				x_label_rotation = 20
@@ -48,7 +44,23 @@ def plot_dates(start_date, end_date):
 			mean_plot = pygal.Box(show_legend=False, style=mean_style, x_label_rotation=x_label_rotation,
 				title=mean_plot_title, y_title=units, show_y_guides=False)
 
-			for date in range(0, len(date_labels)):
+			step_date = start_date
+			time_step = datetime.timedelta(days=1)
+
+			while step_date <= end_date:
+
+				date_means = []
+				count = 0
+				if step_date in date_dict:
+					count = date_dict[step_date]["count"]
+					for mean in date_dict[step_date]["means"]:
+						date_means.append({'value':mean, 'color':'#1a6d2f',
+							'label': str(step_date) + ', ' + str(count) + ' records'})
+				step_date += time_step
+
+				mean_plot.add('', date_means)
+
+			'''for date in range(0, len(date_labels)):
 				date_label = date_labels[date]
 				date_means = []
 				count = date_dict[date_label]["count"]
@@ -57,7 +69,7 @@ def plot_dates(start_date, end_date):
 
 				mean_plot.add('', date_means)
 
-			mean_plot.x_labels = date_labels
+			mean_plot.x_labels = date_labels'''
 
 			if not os.path.exists('static/plots'):
 				os.makedirs('static/plots')

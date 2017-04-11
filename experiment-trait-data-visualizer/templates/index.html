@@ -26,20 +26,22 @@
 			</div>
 		</center>
 		<ol class="timeline">
-		  {% for management_date in management_data %}
-		  	<li style="margin-left: {{ management_data[management_date].timeline_dist * 4}}px;">
+			{% for management_date in management_data %}
+		  	{% set timeline_margin = management_data[management_date].timeline_dist * 4 %}
+		  	{% set total_timeline_margin = management_data[management_date].total_timeline_dist * 4 %}
+		  	<li style="margin-left: {{ timeline_margin }}px;">
 		  		{% for entry in management_data[management_date].entries %}
-		  			- {{ entry.type }}</span>
+		  			<strong>- {{ entry.type }}</strong>
 		  		{% endfor %}
-		    	<div class="details">
+		  	</li>
+		  	<div style="left: {{ total_timeline_margin }}px;" class="details">
 		    	<strong>{{ management_date }}</strong><br>
 		    	{% for entry in management_data[management_date].entries %}
 		    		<strong>{{ entry.type}}</strong><br>
 		      		{{ entry.notes }}
 		      		<br>
 		      	{% endfor %}
-		    	</div>
-		  	</li>
+		    </div>
 		  {% endfor %}
 		</ol>
 		

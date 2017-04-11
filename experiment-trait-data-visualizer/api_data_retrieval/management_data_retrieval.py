@@ -12,6 +12,7 @@ def get_management_data(start_date, end_date):
 
 	managements_data = {}
 
+	total_timeline_dist = 0
 	prev_date = start_date
 
 	for management in all_managements:
@@ -26,7 +27,9 @@ def get_management_data(start_date, end_date):
 			managements_data[curr_date] = {}
 			managements_data[curr_date]["entries"] = []
 			timeline_dist = (curr_date - prev_date).days
+			total_timeline_dist += timeline_dist + 5
 			managements_data[curr_date]["timeline_dist"] = timeline_dist
+			managements_data[curr_date]["total_timeline_dist"] = total_timeline_dist
 
 		managements_data[curr_date]["entries"].append(management_data_entry)
 
