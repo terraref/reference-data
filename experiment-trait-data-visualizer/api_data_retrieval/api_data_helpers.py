@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import datetime
 
 def make_api_request(endpoint, id, payload_add):
 
@@ -13,20 +14,14 @@ def make_api_request(endpoint, id, payload_add):
 	api_data = dict(api_response.json())
 	return api_data
 
-def get_formatted_month(month):
-	if month < 10:
-		return '0' + str(month)
-	return str(month)
+def get_records_file_name(endpoint, start_date, end_date):
+	return 'api_data_cache/' + endpoint + '_' + str(start_date) + '_' + str(end_date)
 
-def get_records_file_name(endpoint, year, start_month, end_month):
-	return 'api_data_cache/' + endpoint + '_' + str(year) + '-' + get_formatted_month(start_month) + '-' + \
-			get_formatted_month(end_month)
-
-def get_records(endpoint, year, start_month, end_month):
+def get_records(endpoint, start_date, end_date):
 
 	records = []
 
-	cache_filename = cache_filename = get_records_file_name(endpoint, year, start_month, end_month)
+	cache_filename = cache_filename = get_records_file_name(endpoint, start_date, end_date)
 	
 	if os.path.exists(cache_filename):
 		with open(cache_filename) as cache_file:
@@ -35,17 +30,19 @@ def get_records(endpoint, year, start_month, end_month):
 
 	record_count = 0
 
-	for month in range(start_month, end_month+1):
+	step_date = start_date
+	time_step = datetime.timedelta(days=1)
 
-		formatted_month = get_formatted_month(month)
+	while step_date <= end_date:
 
-		payload = {'date':'~'+ str(year) + '-' + str(formatted_month),
-					'limit':'none'}
+		curr_date_str = str(step_date)
+		payload = {'date':'~'+curr_date_str, 'limit':'none'}
 
 		api_data = make_api_request(endpoint, '', payload)
-
 		records += api_data["data"]
 		record_count += api_data["metadata"]["count"]
+
+		step_date += time_step
 
 	if not os.path.exists('api_data_cache'):
 		os.makedirs('api_data_cache')
@@ -55,8 +52,8 @@ def get_records(endpoint, year, start_month, end_month):
 
 	return records
 
-def get_trait_records(year, start_month, end_month):
-	return get_records('traits', year, start_month, end_month)
+def get_trait_records(start_date, end_date):
+	return get_records('traits', start_date, end_date)
 
-def get_management_records(year, start_month, end_month):
-	return get_records('managements', year, start_month, end_month)
+def get_management_records(start_date, end_date):
+	return get_records('managements', start_date, end_date)

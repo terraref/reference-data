@@ -7,9 +7,9 @@ def format_date(date):
 	date_string = date.split('T')[0]
 	return datetime.datetime.strptime(date_string, '%Y-%m-%d').date()
 
-def get_trait_data(year, start_month, end_month):
+def get_trait_data(start_date, end_date):
 
-	all_traits = get_trait_records(year, start_month, end_month)
+	all_traits = get_trait_records(start_date, end_date)
 
 	variable_data = {}
 

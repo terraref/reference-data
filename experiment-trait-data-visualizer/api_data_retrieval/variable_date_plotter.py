@@ -1,7 +1,8 @@
 import os
 from .trait_data_retrieval import get_trait_data
 import pygal
-from pygal.style import Style 
+from pygal.style import Style
+import datetime
 
 mean_style = Style(background='transparent',
 							colors=('#000000','#000000'),
@@ -11,20 +12,16 @@ mean_style = Style(background='transparent',
 							major_label_font_size=16,
 							label_font_size=16)
 
-def get_mean_plot_filename(trait, year, start_month, end_month):
-	return 'static/plots/plot_' + str(trait) + '_' + str(year) + '_' + str(start_month) + '_' + str(end_month) + '.svg'
-
-def get_count_plot_filename(trait, year, start_month, end_month):
-	return 'static/plots/countplot_' + str(trait) + '_' + str(year) + '_' + str(start_month) + '_' + str(end_month) + '.svg'
-
+def get_mean_plot_filename(trait, start_date, end_date):
+	return 'static/plots/plot_' + str(trait) + '_' + str(start_date) + '_' + str(end_date) + '.svg'
 	
-def plot_dates(year, start_month, end_month):
+def plot_dates(start_date, end_date):
 
-	trait_data = get_trait_data(year, start_month, end_month)
+	trait_data = get_trait_data(start_date, end_date)
 
 	for trait in trait_data:
 
-		mean_plot_filename = get_mean_plot_filename(trait, year, start_month, end_month)
+		mean_plot_filename = get_mean_plot_filename(trait, start_date, end_date)
 
 		if not os.path.exists(mean_plot_filename):
 

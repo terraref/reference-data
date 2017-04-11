@@ -21,7 +21,7 @@
 					<p class="summary-info">Sorghum Season 2</p>
 					<img class="summary-icon" src="{{ url_for('static', filename='icons/dates-icon.png') }}">
 					<span class="summary-label">Dates</span><br>
-					<p class="summary-info">2016-08 - 2016-12</p>
+					<p class="summary-info">{{ start_date }} - {{ end_date }}</p>
 				</div>
 			</div>
 		</center>
@@ -49,10 +49,7 @@
 				<div class="panel-content">
 					<embed class="mean_plot" type="image/svg+xml"
 						src="{{ url_for('static', filename='plots/plot_' + trait|string + '_' + 
-							year|string + '_' + start_month|string + '_' + end_month|string + '.svg')}}" />
-					<center><embed class="count_plot" type="image/svg+xml"
-						src="{{ url_for('static', filename='plots/countplot_' + trait|string + '_' + 
-							year|string + '_' + start_month|string + '_' + end_month|string + '.svg')}}" /></center>
+							start_date|string + '_' + end_date|string + '.svg')}}" />
 				</div>
 			</div>
 			{% endfor %}
