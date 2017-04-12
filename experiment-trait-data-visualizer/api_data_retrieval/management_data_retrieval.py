@@ -1,11 +1,18 @@
 from .api_data_helpers import get_management_records
 import datetime
 
+# Helper function the returns a datetime.date object given an API formatted date string
 def format_date(date):
 
 	date_string = date.split('T')[0]
 	return datetime.datetime.strptime(date_string, '%Y-%m-%d').date()
 
+# Returns a dict object containing managements data
+# Dates are used as keys, values are dicts containing management data entries
+
+# Dates are used as keys to group management entries for timeline rendering
+# Value dicts also contain 'timeline_dist' and 'total_timeline_dist' keys,
+# which are also used for timeline rendering
 def get_management_data(start_date, end_date):
 
 	all_managements = get_management_records(start_date, end_date)

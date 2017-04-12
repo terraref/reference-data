@@ -46,11 +46,11 @@
 		</ol>
 		
 		<div class="col-md-10 col-md-offset-1">
-			{% for trait in trait_data %}
+			{% for trait_id in trait_variable_ids %}
 			<div class="panel panel-default">
 				<div class="panel-content">
 					<embed class="mean_plot" type="image/svg+xml"
-						src="{{ url_for('static', filename='plots/plot_' + trait|string + '_' + 
+						src="{{ url_for('static', filename='plots/plot_' + trait_id|string + '_' + 
 							start_date|string + '_' + end_date|string + '.svg')}}" />
 				</div>
 			</div>

@@ -2,9 +2,13 @@ from .api_data_helpers import make_api_request
 import os
 import json
 
+# Helper function returns properly formatted filename for cache storage
 def get_filename(variable_id):
 	return 'api_data_cache/' + 'variable_data_' + str(variable_id)
 
+# Called by get_trait_data()
+# Returns a dict containing variable data
+# Variable data used for plot labeling
 def get_variable_data(variable_id):
 
 	cache_filename = get_filename(variable_id)

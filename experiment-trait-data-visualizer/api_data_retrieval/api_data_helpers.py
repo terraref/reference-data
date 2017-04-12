@@ -3,6 +3,7 @@ import json
 import os
 import datetime
 
+# Makes API call, returns dict object created from JSON API data
 def make_api_request(endpoint, id, payload_add):
 
 	payload = {'key':os.environ.get('BETYdbKey')}
@@ -14,9 +15,12 @@ def make_api_request(endpoint, id, payload_add):
 	api_data = dict(api_response.json())
 	return api_data
 
+# Helper function returns properly formatted filename for cache storage
 def get_records_file_name(endpoint, start_date, end_date):
 	return 'api_data_cache/' + endpoint + '_' + str(start_date) + '_' + str(end_date)
 
+# Given an endpoint and date, makes the appropriate API call(s),
+# accumulating data into and returning an array of trait data
 def get_records(endpoint, start_date, end_date):
 
 	records = []
@@ -52,6 +56,7 @@ def get_records(endpoint, start_date, end_date):
 
 	return records
 
+# Calls get_records() with the appropriate endpoints
 def get_trait_records(start_date, end_date):
 	return get_records('traits', start_date, end_date)
 
