@@ -21,16 +21,18 @@ def get_records_file_name(endpoint, start_date, end_date):
 
 # Given an endpoint and date, makes the appropriate API call(s),
 # accumulating data into and returning an array of trait data
-def get_records(endpoint, start_date, end_date):
+def get_records(endpoint, start_date, end_date, interval_retrieval=False):
 
 	records = []
 
 	cache_filename = cache_filename = get_records_file_name(endpoint, start_date, end_date)
 	
-	if os.path.exists(cache_filename):
-		with open(cache_filename) as cache_file:
-			records = json.load(cache_file)
-		return records
+	# Do not use cache file if running cron job
+	if not interval_retrieval:
+		if os.path.exists(cache_filename):
+			with open(cache_filename) as cache_file:
+				records = json.load(cache_file)
+			return records
 
 	record_count = 0
 
@@ -57,8 +59,8 @@ def get_records(endpoint, start_date, end_date):
 	return records
 
 # Calls get_records() with the appropriate endpoints
-def get_trait_records(start_date, end_date):
-	return get_records('traits', start_date, end_date)
+def get_trait_records(start_date, end_date, interval_retrieval=False):
+	return get_records('traits', start_date, end_date, interval_retrieval=interval_retrieval)
 
-def get_management_records(start_date, end_date):
-	return get_records('managements', start_date, end_date)
+def get_management_records(start_date, end_date, interval_retrieval=False):
+	return get_records('managements', start_date, end_date, interval_retrieval=interval_retrieval)

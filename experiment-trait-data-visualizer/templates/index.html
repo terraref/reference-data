@@ -29,7 +29,7 @@
 			{% for management_date in management_data %}
 		  	{% set timeline_margin = management_data[management_date].timeline_dist * 4 %}
 		  	{% set total_timeline_margin = management_data[management_date].total_timeline_dist * 4 %}
-		  	<li style="margin-left: {{ timeline_margin }}px;">
+		  	<li class="timeline-li" style="margin-left: {{ timeline_margin }}px;">
 		  		{% for entry in management_data[management_date].entries %}
 		  			<strong>- {{ entry.type }}</strong>
 		  		{% endfor %}
