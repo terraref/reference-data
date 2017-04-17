@@ -44,7 +44,7 @@ def plot_dates(start_date, end_date):
 				mean_plot_title = variable_name
 
 			mean_plot_title = mean_plot_title.replace('_', ' ').title()
-			mean_plot = pygal.Box(show_legend=False, style=mean_style, x_label_rotation=x_label_rotation,
+			mean_plot = pygal.Box(show_legend=False, style=mean_style,
 				title=mean_plot_title, y_title=units, show_y_guides=False)
 
 			step_date = start_date
@@ -62,10 +62,13 @@ def plot_dates(start_date, end_date):
 					count = date_dict[step_date]["count"]
 					for mean in date_dict[step_date]["means"]:
 						date_means.append({'value':mean, 'color':'#1a6d2f',
-							'label': str(step_date) + ', ' + str(count) + ' records'})
+							'label': str(step_date) + ', ' + str(count) + ' records', 'node': {'r': 2}})
+					mean_plot.add(None, date_means)
+				
+				else:
+					mean_plot.add(None, [{'value':None, 'color': 'rgba(0, 0, 0, 0)'}])
 				step_date += time_step
 
-				mean_plot.add('', date_means)
 
 			# Render to svg
 			if not os.path.exists('static/plots'):
