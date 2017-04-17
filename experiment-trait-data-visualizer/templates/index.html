@@ -8,6 +8,20 @@
 
 {% block title %}TERRA-REF Trait Data{% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='scripts/d3.v2.min.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/timeknots-min.js') }}"></script>
+<script>
+	var managements_data = [
+	{"name": "Planting", "date": "2016/08/03" },
+	{"name": "Herbicide", "date": "2016/08/05" }
+	];
+	TimeKnots.draw("#managements_timeline", managements_data,
+		{dateFormat:"%Y/%m/%d", color: "#696", width:800, showLabels: true, labelFormat: "%Y/%m/%d"});
+</script>
+{% endblock %}
+
 {% block content %}
 	<div class="nav">
 		<p class="main-title">TERRA-REF Trait Data</p>
@@ -25,6 +39,7 @@
 				</div>
 			</div>
 		</center>
+		<div id="managements_timeline"></div>
 		<ol class="timeline">
 			{% for management_date in management_data %}
 		  	{% set timeline_margin = management_data[management_date].timeline_dist * 4 %}
@@ -44,7 +59,20 @@
 		    </div>
 		  	{% endfor %}
 		</ol>
-		
+
+		<!-- <center><div class="dropdown-container">
+			<button class="btn btn-lg btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				Trait
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				{% for trait_id in trait_variable_ids %}
+				<li><a>{{ trait_id }}</a></li>
+				{% endfor %}
+			</ul>
+		</div></center> -->
+
 		<div class="col-md-10 col-md-offset-1">
 			{% for trait_id in trait_variable_ids %}
 			<div class="panel panel-default">
