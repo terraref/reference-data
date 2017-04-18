@@ -33,7 +33,6 @@ def data_summary():
 	# Create svgs for trait data (if they don't exist)
 	# Returns list of trait ids to display in HTML
 	trait_variable_ids = plot_dates(start_date, end_date)
-
 	return render_template('index.html', trait_variable_ids=trait_variable_ids, management_data=management_data,
 											start_date=start_date, end_date=end_date)
 
