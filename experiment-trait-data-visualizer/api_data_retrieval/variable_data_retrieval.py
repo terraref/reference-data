@@ -17,8 +17,8 @@ def get_variable_data(variable_id):
 			variable_return_data = json.load(cache_file)
 		return variable_return_data
 
-	variable_api_data = make_api_request('variables', variable_id, {})
-	variable_general_data = variable_api_data["data"]["variable"]
+	variable_api_data = make_api_request('variables', '', {'variable_id':variable_id})
+	variable_general_data = variable_api_data["data"][0]["variable"]
 
 	variable_return_data = {}
 	variable_return_data["name"] = variable_general_data["name"]
