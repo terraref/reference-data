@@ -1,2 +1,7 @@
 __pycache__/
 *.txt
+venv/
+api_data_cache/
+static/plots/
+*.DS_Store
+plot_test.py

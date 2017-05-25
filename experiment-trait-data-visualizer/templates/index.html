@@ -1,0 +1,61 @@
+{% extends "bootstrap/base.html" %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'style.css') }}">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+{% endblock %}
+
+{% block title %}TERRA-REF Trait Data{% endblock %}
+
+{% block content %}
+	<div class="nav">
+		<p class="main-title">TERRA-REF Trait Data</p>
+	</div>
+	<div class="container">
+		<center>
+			<div class="summary">
+				<div class="summary-container">
+					<img class="summary-icon" src="{{ url_for('static', filename='icons/experiment-icon.png') }}">
+					<span class="summary-label">Experiment</span><br>
+					<p class="summary-info">Sorghum Season 2</p>
+					<img class="summary-icon" src="{{ url_for('static', filename='icons/dates-icon.png') }}">
+					<span class="summary-label">Dates</span><br>
+					<p class="summary-info">{{ start_date }} - {{ end_date }}</p>
+				</div>
+			</div>
+		</center>
+
+		<ol class="timeline">
+			{% for management_date in management_data %}
+		  	{% set timeline_margin = management_data[management_date].timeline_dist * 4 %}
+		  	{% set total_timeline_margin = management_data[management_date].total_timeline_dist * 4 %}
+		  	<li class="timeline-li" style="margin-left: {{ timeline_margin }}px;">
+		  		{% for entry in management_data[management_date].entries %}
+		  			<strong>- {{ entry.type }}</strong>
+		  		{% endfor %}
+		  	</li>
+		  	<div style="left: {{ total_timeline_margin }}px;" class="details">
+		    	<strong>{{ management_date }}</strong><br>
+		    	{% for entry in management_data[management_date].entries %}
+		    		<strong>{{ entry.type}}</strong><br>
+		      		{{ entry.notes }}
+		      		<br>
+		      	{% endfor %}
+		    </div>
+		  	{% endfor %}
+		</ol>
+
+		<div class="col-md-10 col-md-offset-1">
+			{% for trait_id in trait_variable_ids %}
+			<div class="panel panel-default">
+				<div class="panel-content">
+					<embed class="mean_plot" type="image/svg+xml"
+						src="{{ url_for('static', filename='plots/plot_' + trait_id|string + '_' + 
+							start_date|string + '_' + end_date|string + '.svg')}}" />
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}
