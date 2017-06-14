@@ -1,5 +1,7 @@
 library(shiny)
 library(traits)
+library(ggplot2)
+
 knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
 
 options(betydb_key = readLines('~/.betykey', warn = FALSE),
@@ -8,15 +10,15 @@ options(betydb_key = readLines('~/.betykey', warn = FALSE),
 
 experiments <- betydb_query(table='experiments')
 
-traitData <- betydb_query(table='traits', date='~2016-08')
-varsIdsObserved <- as.numeric(unique(traitData[,'variable_id']))
+traitData <- betydb_query(table='traits', date='~2016-08', limit=2000)
+varIdsObserved <- as.numeric(unique(traitData$variable_id))
 
 ui <- fluidPage(
   titlePanel("BETYdb Trait Data"),
   sidebarLayout (
     sidebarPanel(
-      selectInput('selectedExp', 'Experiment', experiments[,'name']),
-      selectInput('selectedVariable','Variable', varsObserved)
+      selectInput('selectedExp', 'Experiment', experiments$name),
+      selectInput('selectedVariable','Variable', varIdsObserved)
     ),
     mainPanel(
       plotOutput('traitPlot')
@@ -26,6 +28,8 @@ ui <- fluidPage(
 
 server <- function(input, output) {
   output$traitPlot <- renderPlot({
+    qplot(as.Date(traitData$date), traitData$mean, main="[Variable] for [Experiment]", 
+          xlab="Date", ylab="Unit", geom="auto")
   })
 }
 shinyApp(ui=ui, server=server)
