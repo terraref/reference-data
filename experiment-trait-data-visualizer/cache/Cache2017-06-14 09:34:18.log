@@ -1,0 +1,155 @@
+[1] "Loading data at 2017-06-14 09:34:18"
+  |                                                                                                  |======                                                                                    |   7%  |                                                                                                  |=========                                                                                 |  10%  |                                                                                                  |============                                                                              |  13%  |                                                                                                  |===============                                                                           |  17%  |                                                                                                  |==================                                                                        |  20%  |                                                                                                  |=====================                                                                     |  23%  |                                                                                                  |========================                                                                  |  27%  |                                                                                                  |===========================                                                               |  30%  |                                                                                                  |==============================                                                            |  33%  |                                                                                                  |=================================                                                         |  37%  |                                                                                                  |====================================                                                      |  40%  |                                                                                                  |=======================================                                                   |  43%  |                                                                                                  |==========================================                                                |  47%# A tibble: 200 x 32
+           id    site_id specie_id citation_id cultivar_id treatment_id                      date
+ *      <dbl>      <dbl>     <int>       <dbl>       <lgl>        <lgl>                     <chr>
+ 1 6001440138 6000003071      2588       6e+09          NA           NA 2016-08-12T17:35:19-05:00
+ 2 6001039550 6000003250      2588       6e+09          NA           NA 2016-08-21T14:11:24-05:00
+ 3 6001039551 6000003166      2588       6e+09          NA           NA 2016-08-21T14:30:08-05:00
+ 4 6001440156 6000003010      2588       6e+09          NA           NA 2016-08-12T17:54:10-05:00
+ 5 6001039554 6000003327      2588       6e+09          NA           NA 2016-08-21T13:48:46-05:00
+ 6 6001039556 6000003041      2588       6e+09          NA           NA 2016-08-21T15:02:56-05:00
+ 7 6001039557 6000003304      2588       6e+09          NA           NA 2016-08-21T13:53:16-05:00
+ 8 6001440176 6000002769      2588       6e+09          NA           NA 2016-08-12T18:53:08-05:00
+ 9 6001039562 6000003052      2588       6e+09          NA           NA 2016-08-21T15:00:29-05:00
+10 6001440185 6000003049      2588       6e+09          NA           NA 2016-08-12T17:42:24-05:00
+# ... with 190 more rows, and 25 more variables: dateloc <chr>, time <lgl>, timeloc <chr>,
+#   mean <dbl>, n <lgl>, statname <chr>, stat <lgl>, notes <chr>, created_at <chr>,
+#   updated_at <chr>, variable_id <dbl>, user_id <dbl>, checked <int>, access_level <int>,
+#   entity_id <lgl>, method_id <dbl>, date_year <lgl>, date_month <lgl>, date_day <lgl>,
+#   time_hour <lgl>, time_minute <lgl>, `number of associated covariates` <int>, `number of
+#   associated variables` <int>, view_url <chr>, edit_url <chr>
+# A tibble: 200 x 32
+           id    site_id specie_id citation_id cultivar_id treatment_id                      date
+ *      <dbl>      <dbl>     <int>       <dbl>       <lgl>        <lgl>                     <chr>
+ 1 6001440138 6000003071      2588       6e+09          NA           NA 2016-08-12T17:35:19-05:00
+ 2 6001039550 6000003250      2588       6e+09          NA           NA 2016-08-21T14:11:24-05:00
+ 3 6001039551 6000003166      2588       6e+09          NA           NA 2016-08-21T14:30:08-05:00
+ 4 6001440156 6000003010      2588       6e+09          NA           NA 2016-08-12T17:54:10-05:00
+ 5 6001039554 6000003327      2588       6e+09          NA           NA 2016-08-21T13:48:46-05:00
+ 6 6001039556 6000003041      2588       6e+09          NA           NA 2016-08-21T15:02:56-05:00
+ 7 6001039557 6000003304      2588       6e+09          NA           NA 2016-08-21T13:53:16-05:00
+ 8 6001440176 6000002769      2588       6e+09          NA           NA 2016-08-12T18:53:08-05:00
+ 9 6001039562 6000003052      2588       6e+09          NA           NA 2016-08-21T15:00:29-05:00
+10 6001440185 6000003049      2588       6e+09          NA           NA 2016-08-12T17:42:24-05:00
+# ... with 190 more rows, and 25 more variables: dateloc <chr>, time <lgl>, timeloc <chr>,
+#   mean <dbl>, n <lgl>, statname <chr>, stat <lgl>, notes <chr>, created_at <chr>,
+#   updated_at <chr>, variable_id <dbl>, user_id <dbl>, checked <int>, access_level <int>,
+#   entity_id <lgl>, method_id <dbl>, date_year <lgl>, date_month <lgl>, date_day <lgl>,
+#   time_hour <lgl>, time_minute <lgl>, `number of associated covariates` <int>, `number of
+#   associated variables` <int>, view_url <chr>, edit_url <chr>
+# A tibble: 200 x 32
+           id    site_id specie_id citation_id cultivar_id treatment_id                      date
+ *      <dbl>      <dbl>     <int>       <dbl>       <lgl>        <lgl>                     <chr>
+ 1 6001440138 6000003071      2588       6e+09          NA           NA 2016-08-12T17:35:19-05:00
+ 2 6001039550 6000003250      2588       6e+09          NA           NA 2016-08-21T14:11:24-05:00
+ 3 6001039551 6000003166      2588       6e+09          NA           NA 2016-08-21T14:30:08-05:00
+ 4 6001440156 6000003010      2588       6e+09          NA           NA 2016-08-12T17:54:10-05:00
+ 5 6001039554 6000003327      2588       6e+09          NA           NA 2016-08-21T13:48:46-05:00
+ 6 6001039556 6000003041      2588       6e+09          NA           NA 2016-08-21T15:02:56-05:00
+ 7 6001039557 6000003304      2588       6e+09          NA           NA 2016-08-21T13:53:16-05:00
+ 8 6001440176 6000002769      2588       6e+09          NA           NA 2016-08-12T18:53:08-05:00
+ 9 6001039562 6000003052      2588       6e+09          NA           NA 2016-08-21T15:00:29-05:00
+10 6001440185 6000003049      2588       6e+09          NA           NA 2016-08-12T17:42:24-05:00
+# ... with 190 more rows, and 25 more variables: dateloc <chr>, time <lgl>, timeloc <chr>,
+#   mean <dbl>, n <lgl>, statname <chr>, stat <lgl>, notes <chr>, created_at <chr>,
+#   updated_at <chr>, variable_id <dbl>, user_id <dbl>, checked <int>, access_level <int>,
+#   entity_id <lgl>, method_id <dbl>, date_year <lgl>, date_month <lgl>, date_day <lgl>,
+#   time_hour <lgl>, time_minute <lgl>, `number of associated covariates` <int>, `number of
+#   associated variables` <int>, view_url <chr>, edit_url <chr>
+# A tibble: 200 x 32
+           id    site_id specie_id citation_id cultivar_id treatment_id                      date
+ *      <dbl>      <dbl>     <int>       <dbl>       <lgl>        <lgl>                     <chr>
+ 1 6001440138 6000003071      2588       6e+09          NA           NA 2016-08-12T17:35:19-05:00
+ 2 6001039550 6000003250      2588       6e+09          NA           NA 2016-08-21T14:11:24-05:00
+ 3 6001039551 6000003166      2588       6e+09          NA           NA 2016-08-21T14:30:08-05:00
+ 4 6001440156 6000003010      2588       6e+09          NA           NA 2016-08-12T17:54:10-05:00
+ 5 6001039554 6000003327      2588       6e+09          NA           NA 2016-08-21T13:48:46-05:00
+ 6 6001039556 6000003041      2588       6e+09          NA           NA 2016-08-21T15:02:56-05:00
+ 7 6001039557 6000003304      2588       6e+09          NA           NA 2016-08-21T13:53:16-05:00
+ 8 6001440176 6000002769      2588       6e+09          NA           NA 2016-08-12T18:53:08-05:00
+ 9 6001039562 6000003052      2588       6e+09          NA           NA 2016-08-21T15:00:29-05:00
+10 6001440185 6000003049      2588       6e+09          NA           NA 2016-08-12T17:42:24-05:00
+# ... with 190 more rows, and 25 more variables: dateloc <chr>, time <lgl>, timeloc <chr>,
+#   mean <dbl>, n <lgl>, statname <chr>, stat <lgl>, notes <chr>, created_at <chr>,
+#   updated_at <chr>, variable_id <dbl>, user_id <dbl>, checked <int>, access_level <int>,
+#   entity_id <lgl>, method_id <dbl>, date_year <lgl>, date_month <lgl>, date_day <lgl>,
+#   time_hour <lgl>, time_minute <lgl>, `number of associated covariates` <int>, `number of
+#   associated variables` <int>, view_url <chr>, edit_url <chr>
+Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	200 obs. of  32 variables:
+ $ id                             : num  6e+09 6e+09 6e+09 6e+09 6e+09 ...
+ $ site_id                        : num  6e+09 6e+09 6e+09 6e+09 6e+09 ...
+ $ specie_id                      : int  2588 2588 2588 2588 2588 2588 2588 2588 2588 2588 ...
+ $ citation_id                    : num  6e+09 6e+09 6e+09 6e+09 6e+09 ...
+ $ cultivar_id                    : logi  NA NA NA NA NA NA ...
+ $ treatment_id                   : logi  NA NA NA NA NA NA ...
+ $ date                           : chr  "2016-08-12T17:35:19-05:00" "2016-08-21T14:11:24-05:00" "2016-08-21T14:30:08-05:00" "2016-08-12T17:54:10-05:00" ...
+ $ dateloc                        : chr  "5.0" "5.0" "5.0" "5.0" ...
+ $ time                           : logi  NA NA NA NA NA NA ...
+ $ timeloc                        : chr  "1.0" "1.0" "1.0" "1.0" ...
+ $ mean                           : num  0.000928 0.000562 0.000611 0.00083 0.000596 ...
+ $ n                              : logi  NA NA NA NA NA NA ...
+ $ statname                       : chr  "" "" "" "" ...
+ $ stat                           : logi  NA NA NA NA NA NA ...
+ $ notes                          : chr  "" "" "" "" ...
+ $ created_at                     : chr  "2017-05-31T02:13:45-05:00" "2017-05-20T05:42:12-05:00" "2017-05-20T05:42:13-05:00" "2017-05-31T02:14:07-05:00" ...
+ $ updated_at                     : chr  "2017-05-31T02:13:45-05:00" "2017-05-20T05:42:12-05:00" "2017-05-20T05:42:13-05:00" "2017-05-31T02:14:07-05:00" ...
+ $ variable_id                    : num  6e+09 6e+09 6e+09 6e+09 6e+09 ...
+ $ user_id                        : num  6e+09 6e+09 6e+09 6e+09 6e+09 ...
+ $ checked                        : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ access_level                   : int  2 2 2 2 2 2 2 2 2 2 ...
+ $ entity_id                      : logi  NA NA NA NA NA NA ...
+ $ method_id                      : num  6e+09 6e+09 6e+09 6e+09 6e+09 ...
+ $ date_year                      : logi  NA NA NA NA NA NA ...
+ $ date_month                     : logi  NA NA NA NA NA NA ...
+ $ date_day                       : logi  NA NA NA NA NA NA ...
+ $ time_hour                      : logi  NA NA NA NA NA NA ...
+ $ time_minute                    : logi  NA NA NA NA NA NA ...
+ $ number of associated covariates: int  0 0 0 0 0 0 0 0 0 0 ...
+ $ number of associated variables : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ view_url                       : chr  "https://terraref.ncsa.illinois.edu/bety/traits/6001440138" "https://terraref.ncsa.illinois.edu/bety/traits/6001039550" "https://terraref.ncsa.illinois.edu/bety/traits/6001039551" "https://terraref.ncsa.illinois.edu/bety/traits/6001440156" ...
+ $ edit_url                       : chr  "https://terraref.ncsa.illinois.edu/bety/traits/6001440138/edit" "https://terraref.ncsa.illinois.edu/bety/traits/6001039550/edit" "https://terraref.ncsa.illinois.edu/bety/traits/6001039551/edit" "https://terraref.ncsa.illinois.edu/bety/traits/6001440156/edit" ...
+ - attr(*, "metadata")=List of 3
+  ..$ URI      : chr "https://terraref.ncsa.illinois.edu/bety/api/beta/traits.json?key=sS8quPK7nt0ySnTFahzDP9VMlGhBqxIqjUKP6SUx&date="| __truncated__
+  ..$ timestamp: chr "2017-06-14T09:49:12-05:00"
+  ..$ count    : int 200
+# A tibble: 200 x 32
+           id    site_id specie_id citation_id cultivar_id treatment_id                      date
+ *      <dbl>      <dbl>     <int>       <dbl>       <lgl>        <lgl>                     <chr>
+ 1 6001440138 6000003071      2588       6e+09          NA           NA 2016-08-12T17:35:19-05:00
+ 2 6001039549 6000002690      2588       6e+09          NA           NA 2017-01-13T17:25:07-06:00
+ 3 6001039550 6000003250      2588       6e+09          NA           NA 2016-08-21T14:11:24-05:00
+ 4 6001039551 6000003166      2588       6e+09          NA           NA 2016-08-21T14:30:08-05:00
+ 5 6001039552 6000002678      2588       6e+09          NA           NA 2017-01-13T17:27:00-06:00
+ 6 6001440156 6000003010      2588       6e+09          NA           NA 2016-08-12T17:54:10-05:00
+ 7 6001039554 6000003327      2588       6e+09          NA           NA 2016-08-21T13:48:46-05:00
+ 8 6001039555 6000002689      2588       6e+09          NA           NA 2017-01-13T17:25:03-06:00
+ 9 6001039556 6000003041      2588       6e+09          NA           NA 2016-08-21T15:02:56-05:00
+10 6001039557 6000003304      2588       6e+09          NA           NA 2016-08-21T13:53:16-05:00
+# ... with 190 more rows, and 25 more variables: dateloc <chr>, time <lgl>, timeloc <chr>,
+#   mean <dbl>, n <lgl>, statname <chr>, stat <lgl>, notes <chr>, created_at <chr>,
+#   updated_at <chr>, variable_id <dbl>, user_id <dbl>, checked <int>, access_level <int>,
+#   entity_id <lgl>, method_id <dbl>, date_year <lgl>, date_month <lgl>, date_day <lgl>,
+#   time_hour <lgl>, time_minute <lgl>, `number of associated covariates` <int>, `number of
+#   associated variables` <int>, view_url <chr>, edit_url <chr>
+
+The downloaded binary packages are in
+	/var/folders/n6/nzfhhtp10zz9_m2gmd02kj6w0000gn/T//Rtmp3NsL7u/downloaded_packages
+# A tibble: 200 x 32
+           id    site_id specie_id citation_id cultivar_id treatment_id                      date
+ *      <dbl>      <dbl>     <int>       <dbl>       <lgl>        <lgl>                     <chr>
+ 1 6001440138 6000003071      2588       6e+09          NA           NA 2016-08-12T17:35:19-05:00
+ 2 6001039550 6000003250      2588       6e+09          NA           NA 2016-08-21T14:11:24-05:00
+ 3 6001039551 6000003166      2588       6e+09          NA           NA 2016-08-21T14:30:08-05:00
+ 4 6001440156 6000003010      2588       6e+09          NA           NA 2016-08-12T17:54:10-05:00
+ 5 6001039554 6000003327      2588       6e+09          NA           NA 2016-08-21T13:48:46-05:00
+ 6 6001039556 6000003041      2588       6e+09          NA           NA 2016-08-21T15:02:56-05:00
+ 7 6001039557 6000003304      2588       6e+09          NA           NA 2016-08-21T13:53:16-05:00
+ 8 6001440176 6000002769      2588       6e+09          NA           NA 2016-08-12T18:53:08-05:00
+ 9 6001039562 6000003052      2588       6e+09          NA           NA 2016-08-21T15:00:29-05:00
+10 6001440185 6000003049      2588       6e+09          NA           NA 2016-08-12T17:42:24-05:00
+# ... with 190 more rows, and 25 more variables: dateloc <chr>, time <lgl>, timeloc <chr>,
+#   mean <dbl>, n <lgl>, statname <chr>, stat <lgl>, notes <chr>, created_at <chr>,
+#   updated_at <chr>, variable_id <dbl>, user_id <dbl>, checked <int>, access_level <int>,
+#   entity_id <lgl>, method_id <dbl>, date_year <lgl>, date_month <lgl>, date_day <lgl>,
+#   time_hour <lgl>, time_minute <lgl>, `number of associated covariates` <int>, `number of
+#   associated variables` <int>, view_url <chr>, edit_url <chr>
