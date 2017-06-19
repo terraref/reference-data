@@ -33,7 +33,7 @@ server <- function(input, output) {
     
     selectedExpRow <- subset(experiments, name==input$selectedExp)
     experimentStartDate <- as.Date(selectedExpRow$start_date)
-    experimentEndDate <- as.Date(selectedExpRow$end_date)
+    experimentEndDate <- experimentStartDate + days(10) #as.Date(selectedExpRow$end_date)
     
     currDate <- experimentStartDate
     while (experimentEndDate - currDate != 0) {
@@ -42,9 +42,9 @@ server <- function(input, output) {
       currDate <- currDate + days(1)
     }
     
-    output$selectedVariable <- renderUI({
+    output$selectVariable <- renderUI({
       variableIds <- as.numeric(unique(fullTraitData$variable_id))
-      selectInput <- selectInput('selectedVariable', 'Variable ID', variableIds)
+      selectInput('selectedVariable', 'Variable ID', variableIds)
     })
     variableTraitData <- subset(fullTraitData, variable_id=input$selectedVariable)
     
