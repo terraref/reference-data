@@ -2,6 +2,7 @@ library(shiny)
 library(traits)
 library(ggplot2)
 library(lubridate)
+library(DataCache)
 
 knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
 
@@ -10,7 +11,6 @@ options(betydb_key = readLines('~/.betykey', warn = FALSE),
         betydb_api_version = 'beta')
 
 experiments <- betydb_query(table='experiments')
-#varIdsObserved <- as.numeric()
 
 ui <- fluidPage(
   titlePanel("BETYdb Trait Data"),
@@ -25,6 +25,24 @@ ui <- fluidPage(
   )
 )
 
+# load traits function used for cache functionality
+loadTraitData <- function(startDate, endDate) {
+  
+  fullTraitData <- data.frame()
+  
+  currDate <- startDate
+  while (endDate - currDate != 0) {
+    currTraitData <- betydb_query(table='traits', data=paste0('~', currDate))
+    fullTraitData <- rbind(fullTraitData, currTraitData)
+    currDate <- currDate + days(1)
+  }
+  
+  retData <- list(fullTraitData)
+  names(retData) <- 'fullTraitData'
+  
+  return(retData)
+}
+
 server <- function(input, output) {
   
   output$traitPlot <- renderPlot({
@@ -33,14 +51,9 @@ server <- function(input, output) {
     
     selectedExpRow <- subset(experiments, name==input$selectedExp)
     experimentStartDate <- as.Date(selectedExpRow$start_date)
-    experimentEndDate <- experimentStartDate + days(10) #as.Date(selectedExpRow$end_date)
+    experimentEndDate <- as.Date(selectedExpRow$end_date)
     
-    currDate <- experimentStartDate
-    while (experimentEndDate - currDate != 0) {
-      currTraitData <- betydb_query(table='traits', date=paste0('~', currDate), limit='1')
-      fullTraitData <- rbind(fullTraitData, currTraitData)
-      currDate <- currDate + days(1)
-    }
+    data.cache(cache.name='TraitCache', loadTraitData, startDate=experimentStartDate, endDate=experimentEndDate)
     
     output$selectVariable <- renderUI({
       variableIds <- as.numeric(unique(fullTraitData$variable_id))
