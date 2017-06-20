@@ -32,7 +32,7 @@ loadTraitData <- function(startDate, endDate) {
   
   currDate <- startDate
   while (endDate - currDate != 0) {
-    currTraitData <- betydb_query(table='traits', data=paste0('~', currDate))
+    currTraitData <- betydb_query(table='traits', date=paste0('~', currDate))
     fullTraitData <- rbind(fullTraitData, currTraitData)
     currDate <- currDate + days(1)
   }
@@ -45,24 +45,23 @@ loadTraitData <- function(startDate, endDate) {
 
 server <- function(input, output) {
   
-  output$traitPlot <- renderPlot({
-    
-    fullTraitData <- data.frame()
-    
-    selectedExpRow <- subset(experiments, name==input$selectedExp)
-    experimentStartDate <- as.Date(selectedExpRow$start_date)
-    experimentEndDate <- as.Date(selectedExpRow$end_date)
-    
-    data.cache(cache.name='TraitCache', loadTraitData, startDate=experimentStartDate, endDate=experimentEndDate)
-    
-    output$selectVariable <- renderUI({
-      variableIds <- as.numeric(unique(fullTraitData$variable_id))
-      selectInput('selectedVariable', 'Variable ID', variableIds)
-    })
-    variableTraitData <- subset(fullTraitData, variable_id=input$selectedVariable)
-    
-    qplot(as.Date(variableTraitData$date), variableTraitData$mean, main="[Variable] for [Experiment]", 
-          xlab="Date", ylab="Unit", geom="auto")
+  selectedExpRow <- reactive({ subset(experiments, name==input$selectedExp) })
+  
+  experimentStartDate <- reactive({ as.Date(selectedExpRow()$start_date) })
+  experimentEndDate <- reactive({ as.Date(selectedExpRow()$end_date) })
+  
+  output$selectVariable <- renderUI({
+    data.cache(cache.name='TraitCache', loadTraitData, startDate=experimentStartDate(), endDate=experimentEndDate())
+    variableIds <- as.numeric(unique(fullTraitData$variable_id))
+    selectInput('selectedVariable', 'Variable ID', variableIds)
   })
+
+  output$traitPlot <- renderPlot({
+    data.cache(cache.name='TraitCache', loadTraitData, startDate=experimentStartDate(), endDate=experimentEndDate())
+    variableTraitData <- subset(fullTraitData, variable_id==input$selectedVariable)
+    qplot(as.Date(variableTraitData$date), variableTraitData$mean, main="[Variable] for [Experiment]", 
+          xlab="Date", ylab="Unit")
+  })
+  
 }
 shinyApp(ui=ui, server=server)
