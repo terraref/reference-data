@@ -12,7 +12,6 @@ Reference data encompasses clear definitions of data formats, semantics, and int
 To provide input on the computing pipeline, please visit the [Reference Data GitHub repository](https://github.com/terraref/reference-data).
 
 * [GitHub Issues](https://github.com/terraref/computing-pipeline/issues)
-* [Chat Room](https://gitter.im/terraref/computing-pipeline)
 
 
 
