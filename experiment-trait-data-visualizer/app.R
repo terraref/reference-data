@@ -49,17 +49,23 @@ server <- function(input, output) {
   
   experimentStartDate <- reactive({ as.Date(selectedExpRow()$start_date) })
   experimentEndDate <- reactive({ as.Date(selectedExpRow()$end_date) })
-  
+
   output$selectVariable <- renderUI({
-    data.cache(cache.name='TraitCache', loadTraitData, startDate=experimentStartDate(), endDate=experimentEndDate())
+    data.cache(cache.name=paste0('TraitCache_', experimentStartDate(), '_', experimentEndDate()), loadTraitData, startDate=experimentStartDate(), endDate=experimentEndDate())
     variableIds <- as.numeric(unique(fullTraitData$variable_id))
+    variableNames <- vector()
+    for (variableId in variableIds) {
+      varName <- betydb_query(table='variables', id=variableId)$name
+      variableNames <- c(variableNames, varName)
+    }
+    names(variableIds) <- variableNames
     selectInput('selectedVariable', 'Variable ID', variableIds)
   })
-
+  
   output$traitPlot <- renderPlot({
-    data.cache(cache.name='TraitCache', loadTraitData, startDate=experimentStartDate(), endDate=experimentEndDate())
+    data.cache(cache.name=paste0('TraitCache_', experimentStartDate(), '_', experimentEndDate()), loadTraitData, startDate=experimentStartDate(), endDate=experimentEndDate())
     variableTraitData <- subset(fullTraitData, variable_id==input$selectedVariable)
-    qplot(as.Date(variableTraitData$date), variableTraitData$mean, main="[Variable] for [Experiment]", 
+    qplot(as.Date(variableTraitData$date), variableTraitData$mean, main=input$selectedVariable, 
           xlab="Date", ylab="Unit")
   })
   
