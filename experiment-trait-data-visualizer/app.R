@@ -10,13 +10,15 @@ options(betydb_key = readLines('~/.betykey', warn = FALSE),
         betydb_url = "https://terraref.ncsa.illinois.edu/bety/",
         betydb_api_version = 'beta')
 
-experiments <- betydb_query(table='experiments')
+experiments <- as.data.frame(betydb_query(table='experiments'))
+seasons <- unique(experiments[c('start_date', 'end_date')])
+rownames(seasons) <- paste0(seasons$start_date, ' - ', seasons$end_date)
 
 ui <- fluidPage(
   titlePanel("BETYdb Trait Data"),
   sidebarLayout (
     sidebarPanel(
-      selectInput('selectedExp', 'Experiment', experiments$name),
+      selectInput('selectedSeason', 'Season', rownames(seasons)),
       uiOutput('selectVariable')
     ),
     mainPanel(
@@ -45,29 +47,40 @@ loadTraitData <- function(startDate, endDate) {
 
 server <- function(input, output) {
   
-  selectedExpRow <- reactive({ subset(experiments, name==input$selectedExp) })
+  selectedSeasonRow <- reactive({ seasons[input$selectedSeason,] })
+  seasonStartDate <- reactive({ as.Date(selectedSeasonRow()$start_date) })
+  seasonEndDate <- reactive({ as.Date(selectedSeasonRow()$end_date) })
   
-  experimentStartDate <- reactive({ as.Date(selectedExpRow()$start_date) })
-  experimentEndDate <- reactive({ as.Date(selectedExpRow()$end_date) })
+  cacheName <- reactive({ paste0('TraitCache_', seasonStartDate(), '_', seasonEndDate()) })
 
   output$selectVariable <- renderUI({
-    data.cache(cache.name=paste0('TraitCache_', experimentStartDate(), '_', experimentEndDate()), loadTraitData, startDate=experimentStartDate(), endDate=experimentEndDate())
+    
+    data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate())
+ 
     variableIds <- as.numeric(unique(fullTraitData$variable_id))
     variableNames <- vector()
     for (variableId in variableIds) {
       varName <- betydb_query(table='variables', id=variableId)$name
+      varName <- gsub('_', ' ', varName)
       variableNames <- c(variableNames, varName)
     }
     names(variableIds) <- variableNames
-    selectInput('selectedVariable', 'Variable ID', variableIds)
+    
+    selectInput('selectedVariable', 'Variable', variableIds)
   })
   
   output$traitPlot <- renderPlot({
-    data.cache(cache.name=paste0('TraitCache_', experimentStartDate(), '_', experimentEndDate()), loadTraitData, startDate=experimentStartDate(), endDate=experimentEndDate())
-    variableTraitData <- subset(fullTraitData, variable_id==input$selectedVariable)
-    qplot(as.Date(variableTraitData$date), variableTraitData$mean, main=input$selectedVariable, 
-          xlab="Date", ylab="Unit")
+
+    data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate())
+    
+    variableIdData <- betydb_query(table='variables', id=input$selectedVariable)
+    variableTraitData <- subset(fullTraitData, variable_id==variableIdData$id)
+    
+    qplot(as.Date(variableTraitData$date), variableTraitData$mean, 
+          main="Mean Values", 
+          xlab="Date", ylab=variableIdData$units)
   })
   
 }
+
 shinyApp(ui=ui, server=server)
