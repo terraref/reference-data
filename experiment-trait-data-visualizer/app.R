@@ -12,7 +12,7 @@ options(betydb_key = readLines('~/.betykey', warn = FALSE),
 
 experiments <- as.data.frame(betydb_query(table='experiments'))
 seasons <- unique(experiments[c('start_date', 'end_date')])
-rownames(seasons) <- paste0(seasons$start_date, ' - ', seasons$end_date)
+rownames(seasons) <- paste0('[', seasons$start_date, ']', ' - ', '[', seasons$end_date, ']')
 
 ui <- fluidPage(
   titlePanel("BETYdb Trait Data"),
@@ -76,9 +76,7 @@ server <- function(input, output) {
     variableIdData <- betydb_query(table='variables', id=input$selectedVariable)
     variableTraitData <- subset(fullTraitData, variable_id==variableIdData$id)
     
-    qplot(as.Date(variableTraitData$date), variableTraitData$mean, 
-          main="Mean Values", 
-          xlab="Date", ylab=variableIdData$units)
+    ggplot(variableTraitData, aes(as.Date(date), mean)) + geom_boxplot(aes(group=cut_width(as.Date(date), 1)))
   })
   
 }
