@@ -57,7 +57,7 @@ server <- function(input, output) {
     
     data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate())
  
-    variableIds <- as.numeric(unique(fullTraitData$variable_id))
+    variableIds <- unique(as.numeric(fullTraitData$variable_id))
     variableNames <- vector()
     for (variableId in variableIds) {
       varName <- betydb_query(table='variables', id=variableId)$name
@@ -73,12 +73,15 @@ server <- function(input, output) {
 
     data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate())
     
-    variableIdData <- betydb_query(table='variables', id=input$selectedVariable)
-    variableTraitData <- subset(fullTraitData, variable_id==variableIdData$id)
+    if (!is.null(input$selectedVariable)) {
+      variableIdData <- betydb_query(table='variables', id=input$selectedVariable)
+      variableTraitData <- subset(fullTraitData, variable_id==as.numeric(variableIdData$id))
     
-    ggplot(variableTraitData, aes(as.Date(date), mean)) + geom_boxplot(aes(group=cut_width(as.Date(date), 1)))
+      ggplot(variableTraitData, aes(as.Date(date), mean)) + 
+      geom_boxplot(aes(group=cut_width(as.Date(date), 1))) +
+      xlab("Dates") + ylab(variableIdData$units)
+    }
   })
-  
 }
 
 shinyApp(ui=ui, server=server)
