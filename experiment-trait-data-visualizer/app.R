@@ -3,6 +3,7 @@ library(traits)
 library(ggplot2)
 library(lubridate)
 library(DataCache)
+library(timevis)
 
 # set options for BETYdb API
 knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
@@ -17,18 +18,30 @@ rownames(seasons) <- paste0('[', seasons$start_date, ']', ' - ', '[', seasons$en
 
 # set page UI
 ui <- fluidPage(
-  titlePanel("BETYdb Trait Data"),
-  sidebarLayout (
-    sidebarPanel(
-      # season menu
-      selectInput('selectedSeason', 'Season', rownames(seasons)),
-      # variable menu to be rendered when variables for a given season are parsed in server()
-      uiOutput('selectVariable')
-    ),
-    mainPanel(
-      plotOutput('traitPlot')
-    )
+  
+  title = "TERRA-REF Experimental Data",
+  
+  h1('TERRA-REF Experimental Data'),
+
+  # season menu
+  selectInput('selectedSeason', 'Season', rownames(seasons)),
+  
+  hr(),
+  
+  h3('Trait Data'),
+  
+  # variable menu to be rendered when variables for a given season are parsed in server()
+  uiOutput('selectVariable'),
+  
+  plotOutput('traitPlot'),
+  
+  hr(),
+  h3('Managements Data'),
+  
+  fluidRow(
+    timevisOutput('timeline')
   )
+  
 )
 
 # load trait data from BETYdb
@@ -52,13 +65,28 @@ loadTraitData <- function(startDate, endDate) {
       # update progress bar
       incProgress(1/initialDateDiff)
     }
-  
-    # format data as for usability with DataCache library
-    retData <- list(fullTraitData)
-    names(retData) <- 'fullTraitData'
-  
-    return(retData)
   })
+  
+  # format data as for usability with DataCache library
+  retData <- list(fullTraitData)
+  names(retData) <- 'fullTraitData'
+  
+  return(retData)
+}
+
+getManagementsData <- function(startDate, endDate) {
+
+    fullMgmtData <- data.frame()
+    
+    currDate <- startDate
+    while (endDate - currDate != 0) {
+      # get management data for each day
+      currMgmtData <- betydb_query(table='managements', date=paste0('~', currDate))
+      fullMgmtData <- rbind(fullMgmtData, currMgmtData)
+      currDate <- currDate + days(1)
+    }
+    
+    return(fullMgmtData)
 }
 
 # handle all app logic
@@ -80,6 +108,7 @@ server <- function(input, output) {
  
     # get unique variable ids from observations in current season
     variableIds <- unique(as.numeric(fullTraitData$variable_id))
+    
     # query API for readable names for variable ids, set names
     variableNames <- vector()
     for (variableId in variableIds) {
@@ -103,14 +132,30 @@ server <- function(input, output) {
       # get observations for selected variable
       variableIdData <- betydb_query(table='variables', id=input$selectedVariable)
       variableTraitData <- subset(fullTraitData, variable_id==as.numeric(variableIdData$id))
+      
+      # get specie data for title
+      specieId <- unique(as.numeric(variableTraitData$specie_id))
+      specieData <- betydb_query(table='species', id=specieId)
+      title <- paste0('Mean ', gsub('_', ' ', variableIdData$name), ' for ', specieData$scientificname)
 
       # generate timeseries of boxplots from mean value
       ggplot(variableTraitData, aes(as.Date(date), mean)) + 
       geom_boxplot(aes(group=cut_width(as.Date(date), 1))) +
-      xlab("Dates") + ylab(variableIdData$units) + 
+      labs(title=title,
+        x="Observation Dates", y=variableIdData$units) +
       theme(text = element_text(size=20), axis.text.x = element_text(angle=45, hjust=1))
     }
-    
+  })
+  
+  # generate timeline visualization for managements data
+  output$timeline <- renderTimevis({
+    mgmtData <- getManagementsData(startDate=seasonStartDate(), endDate=seasonEndDate())
+    timelineData <- data.frame(
+      id=1:nrow(mgmtData),
+      content=mgmtData$mgmttype,
+      start=as.Date(mgmtData$date)
+    )
+    timevis(timelineData)
   })
 }
 
