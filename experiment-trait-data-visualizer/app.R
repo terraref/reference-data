@@ -58,8 +58,8 @@ loadTraitData <- function(startDate, endDate) {
     # loop through all days in a given season
     while (endDate - currDate != 0) {
       # get trait data for each day
-      currTraitData <- betydb_query(table='traits', date=paste0('~', currDate), limit='5')
-      fullTraitData <- rbind(fullTraitData, currTraitData)
+      currTraitData <- betydb_query(table='traits', date=paste0('~', currDate), limit='none')
+      fullTraitData <- rbind(fullTraitData, currTraitData[c('date', 'mean', 'variable_id', 'specie_id')])
       currDate <- currDate + days(1)
       
       # update progress bar
@@ -104,7 +104,7 @@ server <- function(input, output) {
   output$selectVariable <- renderUI({
     
     # get access to 'fullTraitData'
-    data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate())
+    data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate(), frequency='daily')
  
     # get unique variable ids from observations in current season
     variableIds <- unique(as.numeric(fullTraitData$variable_id))
