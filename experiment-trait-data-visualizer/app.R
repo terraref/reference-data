@@ -19,26 +19,26 @@ rownames(seasons) <- paste0('[', seasons$start_date, ']', ' - ', '[', seasons$en
 # set page UI
 ui <- fluidPage(
   
-  title = "TERRA-REF Experimental Data",
+  column(width=8, offset=2, 
+    title = "TERRA-REF Experimental Data",
   
-  h1('TERRA-REF Experimental Data'),
+    h1('TERRA-REF Experimental Data'),
 
-  # season menu
-  selectInput('selectedSeason', 'Season', rownames(seasons)),
+    # season menu
+    selectInput('selectedSeason', 'Season', rownames(seasons)),
   
-  hr(),
+    hr(),
   
-  h3('Trait Data'),
+    h3('Trait Data'),
   
-  # variable menu to be rendered when variables for a given season are parsed in server()
-  uiOutput('selectVariable'),
+    # variable menu to be rendered when variables for a given season are parsed in server()
+    uiOutput('selectVariable'),
   
-  plotOutput('traitPlot'),
+    plotOutput('traitPlot'),
   
-  hr(),
-  h3('Managements Data'),
+    hr(),
+    h3('Managements Data'),
   
-  fluidRow(
     timevisOutput('timeline')
   )
   
@@ -82,7 +82,7 @@ getManagementsData <- function(startDate, endDate) {
     while (endDate - currDate != 0) {
       # get management data for each day
       currMgmtData <- betydb_query(table='managements', date=paste0('~', currDate))
-      fullMgmtData <- rbind(fullMgmtData, currMgmtData)
+      fullMgmtData <- rbind(fullMgmtData, currMgmtData[c('date', 'mgmttype')])
       currDate <- currDate + days(1)
     }
     
@@ -103,7 +103,7 @@ server <- function(input, output) {
   # render menu for selecting variable to view data for
   output$selectVariable <- renderUI({
     
-    # get access to 'fullTraitData'
+    # get access to 'fullTraitData' from cache
     data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate(), frequency='daily')
  
     # get unique variable ids from observations in current season
@@ -124,7 +124,7 @@ server <- function(input, output) {
   # render plot for selected variable
   output$traitPlot <- renderPlot({
 
-    # get access to 'fullTraitData'
+    # get access to 'fullTraitData' from cache
     data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate())
     
     # only render plot of a variable is selected
@@ -143,7 +143,8 @@ server <- function(input, output) {
       geom_boxplot(aes(group=cut_width(as.Date(date), 1))) +
       labs(title=title,
         x="Observation Dates", y=variableIdData$units) +
-      theme(text = element_text(size=20), axis.text.x = element_text(angle=45, hjust=1))
+        theme(text = element_text(size=20), axis.text.x = element_text(angle=45, hjust=1)) +
+        expand_limits(y=0) + xlim(seasonStartDate(), seasonEndDate())
     }
   })
   
@@ -152,7 +153,7 @@ server <- function(input, output) {
     mgmtData <- getManagementsData(startDate=seasonStartDate(), endDate=seasonEndDate())
     timelineData <- data.frame(
       id=1:nrow(mgmtData),
-      content=mgmtData$mgmttype,
+      content=paste0(mgmtData$mgmttype),
       start=as.Date(mgmtData$date)
     )
     timevis(timelineData)
