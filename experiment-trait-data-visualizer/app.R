@@ -14,6 +14,7 @@ options(betydb_key = readLines('~/.betykey', warn = FALSE),
 # get list of seasons for user to select from
 experiments <- as.data.frame(betydb_query(table='experiments'))
 seasons <- unique(experiments[c('start_date', 'end_date')])
+print(seasons)
 rownames(seasons) <- paste0('[', seasons$start_date, ']', ' - ', '[', seasons$end_date, ']')
 
 # set page UI
@@ -28,11 +29,11 @@ ui <- fluidPage(
     selectInput('selectedSeason', 'Season', rownames(seasons)),
   
     hr(),
-  
     h3('Trait Data'),
   
     # variable menu to be rendered when variables for a given season are parsed in server()
     uiOutput('selectVariable'),
+    uiOutput('selectCultivar'),
   
     plotOutput('traitPlot'),
   
@@ -59,7 +60,7 @@ loadTraitData <- function(startDate, endDate) {
     while (endDate - currDate != 0) {
       # get trait data for each day
       currTraitData <- betydb_query(table='traits', date=paste0('~', currDate), limit='none')
-      fullTraitData <- rbind(fullTraitData, currTraitData[c('date', 'mean', 'variable_id', 'specie_id')])
+      fullTraitData <- rbind(fullTraitData, currTraitData[c('date', 'mean', 'variable_id', 'specie_id', 'cultivar_id')])
       currDate <- currDate + days(1)
       
       # update progress bar
@@ -121,6 +122,19 @@ server <- function(input, output) {
     selectInput('selectedVariable', 'Variable', variableIds)
   })
   
+  # render menu for selecting cultivar to view data for
+  output$selectCultivar <- renderUI({
+    
+    # get access to 'fullTraitData' from cache
+    data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate(), frequency='daily')
+    
+    # get unique cultivar ids from observations in current season
+    cultivarIds <- sort(unique(as.numeric(fullTraitData$cultivar_id)))
+    
+    selectInput('selectedCultivar', 'Cultivar', cultivarIds)
+    
+  })
+  
   # render plot for selected variable
   output$traitPlot <- renderPlot({
 
@@ -153,7 +167,7 @@ server <- function(input, output) {
     mgmtData <- getManagementsData(startDate=seasonStartDate(), endDate=seasonEndDate())
     timelineData <- data.frame(
       id=1:nrow(mgmtData),
-      content=paste0(mgmtData$mgmttype),
+      content=mgmtData$mgmttype,
       start=as.Date(mgmtData$date)
     )
     timevis(timelineData)
