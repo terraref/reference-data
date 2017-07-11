@@ -57,22 +57,30 @@ server <- function(input, output) {
   output$select_cultivar <- renderUI({
     
     if (!is.null(input$selected_variable)) {
+      
       cultivar_ids <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]][[ 'cultivar_id' ]]
       unique_cultivar_ids <- sort(unique(as.numeric(cultivar_ids)))
       cultivar_select_menu <- c('All Cultivars', unique_cultivar_ids)
       selectInput('selected_cultivar', 'Cultivar', cultivar_select_menu)
+      
     }
   })
   
   # render plot for selected variable, cultivar
   output$trait_plot <- renderPlot({
     
-    if (!is.null(input$selected_variable)) {
+    if (!is.null(input$selected_variable) & !is.null(input$selected_cultivar)) {
       
       units <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'units' ]]
       
+      plot_data <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]]
+      
+      if (input$selected_cultivar != 'All Cultivars') {
+        plot_data <- subset(plot_data, cultivar_id == input$selected_cultivar)
+      }
+      
       # generate timeseries of boxplots from mean value
-      ggplot(selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]], aes(as.Date(date), mean)) + 
+      ggplot(plot_data, aes(as.Date(date), mean)) + 
       geom_boxplot(aes(group=cut_width(as.Date(date), 1))) +
       labs(
         title = paste0(input$selected_variable),
