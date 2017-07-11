@@ -23,8 +23,7 @@ get_variable_metadata<- function(variable_id) {
 
 refresh_cache_for_season <- function(season) {
   
-  season_full_cache_data <- list()
-  season_full_cache_data <- c(season_full_cache_data, start_date = toString(season['start_date']), end_date = toString(season['end_date']))
+  season_full_cache_data <- list(start_date = toString(season['start_date']), end_date = toString(season['end_date']))
 
   curr_date <- as.Date(season['start_date'])
   stop_date <- as.Date(season['end_date'])
@@ -55,16 +54,19 @@ refresh_cache_for_season <- function(season) {
     
     curr_variable_trait_records <- subset(season_all_trait_records, variable_id == curr_variable_id)[c('date', 'mean', 'cultivar_id')]
     curr_variable_metadata <- get_variable_metadata(curr_variable_id)
-    print(curr_variable_metadata)
     
-    curr_variable_cache_data <- c(curr_variable_cache_data, name = curr_variable_metadata$name, units = curr_variable_metadata$units, traits = curr_variable_trait_records)
+    curr_variable_cache_data[[ 'units' ]] <- curr_variable_metadata$units
+    curr_variable_cache_data[[ 'traits' ]] <- curr_variable_trait_records
     
-    season_trait_data <- c(season_trait_data, curr_variable_cache_data)
+    season_trait_data[[ curr_variable_metadata$name ]] <- curr_variable_cache_data
   }
   
-  season_full_cache_data <- c(season_full_cache_data, management = season_management_records, trait_data = season_trait_data)
+  season_full_cache_data[[ 'managements' ]] <- season_management_records
+  season_full_cache_data[[ 'trait_data' ]] <- season_trait_data
   
-  cache_data[[ toString(season['name']) ]] = season_full_cache_data
+  cache_data[[ toString(season['name']) ]] <- season_full_cache_data
+  
+  save(cache_data, file="BETYdb-data.RData")
 }
 
 refresh_cache <- function() {

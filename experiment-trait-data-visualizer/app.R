@@ -12,8 +12,8 @@ options(betydb_key = readLines('~/.betykey', warn = FALSE),
         betydb_api_version = 'beta')
 
 # load data from file
-BETYdb_data <- load("BETYdb-data.RData")
-seasons <- names(BETYdb_data)
+load("BETYdb-data.RData")
+seasons <- names(cache_data)
 
 # set page UI
 ui <- fluidPage(
@@ -47,43 +47,45 @@ ui <- fluidPage(
 # render page elements
 server <- function(input, output) {
   
-  selected_season_data <- reactive({ BETYdb_data[[ input$selected_season ]] })
+  selected_season_data <- reactive({ cache_data[[ input$selected_season ]] })
   
   # render menu for variable selection
-  output$selectVariable <- renderUI({
-    selectInput('selected_variable', 'Variable', names(selected_season_data[[ 'trait_data' ]]))
+  output$select_variable <- renderUI({
+    selectInput('selected_variable', 'Variable', names(selected_season_data()[[ 'trait_data' ]]))
   })
   
   # render menu for cultivar selection
-  output$selectCultivar <- renderUI({
-    
-    cultivar_ids <- sort(unique(as.numeric( selected_season_data[[ input$selected_variable ]][[ 'traits' ]][[ cultivar_id ]] )))
-    selectInput('selected_cultivar', 'Cultivar', cultivar_ids)
-  })
+  #output$select_cultivar <- renderUI({
+  #  
+  #  cultivar_ids <- sort(unique(as.numeric( selected_season_data()[[ input$selected_variable ]][[ 'traits' ]][[ 'cultivar_id' ]] )))
+  #  print(cultivar_ids)
+  #  selectInput('selected_cultivar', 'Cultivar', cultivar_ids)
+  #})
   
   # render plot for selected variable, cultivar
   output$trait_plot <- renderPlot({
     
     if (!is.null(input$selected_variable)) {
       
+      units <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'units' ]]
+      
       # generate timeseries of boxplots from mean value
-      ggplot(selected_season_data[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]], aes(as.Date(date), mean)) + 
+      ggplot(selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]], aes(as.Date(date), mean)) + 
       geom_boxplot(aes(group=cut_width(as.Date(date), 1))) +
       labs(
-        title = input$selected_variable,
+        title = paste0(input$selected_variable),
         x = "Observation Dates",
-        y = selected_season_data[[ 'trait_data' ]][[ input$selected_variable ]][[ 'units' ]]
+        y = units
       ) +
       theme(text = element_text(size = 20), axis.text.x = element_text(angle = 45, hjust = 1)) +
       expand_limits(y = 0) + 
-      xlim(as.Date(selected_season_data[[ 'start_date' ]]), as.Date(selected_season_data[[ 'end_date' ]]))
+      xlim(as.Date(selected_season_data()[[ 'start_date' ]]), as.Date(selected_season_data()[[ 'end_date' ]]))
     }
   })
   
   # generate timeline visualization for management data
   output$timeline <- renderTimevis({
-    
-    management_data <- selected_season_data[[ 'managements' ]]
+    management_data <- selected_season_data()[[ 'managements' ]]
     timeline_data <- data.frame(
       id = 1:nrow(management_data),
       content = management_data$mgmttype,
