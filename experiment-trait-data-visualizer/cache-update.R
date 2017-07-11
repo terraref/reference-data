@@ -82,4 +82,4 @@ refresh_cache <- function() {
 }
 
 refresh_cache()
-save(cache_data, file="BETYdb-data.RData")
+save(cache_data, file="cache.RData")

@@ -2,7 +2,6 @@ library(shiny)
 library(traits)
 library(ggplot2)
 library(lubridate)
-library(DataCache)
 library(timevis)
 
 # set options for BETYdb API
@@ -12,7 +11,7 @@ options(betydb_key = readLines('~/.betykey', warn = FALSE),
         betydb_api_version = 'beta')
 
 # load data from file
-load("BETYdb-data.RData")
+load("cache.RData")
 seasons <- names(cache_data)
 
 # set page UI
@@ -55,12 +54,15 @@ server <- function(input, output) {
   })
   
   # render menu for cultivar selection
-  #output$select_cultivar <- renderUI({
-  #  
-  #  cultivar_ids <- sort(unique(as.numeric( selected_season_data()[[ input$selected_variable ]][[ 'traits' ]][[ 'cultivar_id' ]] )))
-  #  print(cultivar_ids)
-  #  selectInput('selected_cultivar', 'Cultivar', cultivar_ids)
-  #})
+  output$select_cultivar <- renderUI({
+    
+    if (!is.null(input$selected_variable)) {
+      cultivar_ids <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]][[ 'cultivar_id' ]]
+      unique_cultivar_ids <- sort(unique(as.numeric(cultivar_ids)))
+      cultivar_select_menu <- c('All Cultivars', unique_cultivar_ids)
+      selectInput('selected_cultivar', 'Cultivar', cultivar_select_menu)
+    }
+  })
   
   # render plot for selected variable, cultivar
   output$trait_plot <- renderPlot({
