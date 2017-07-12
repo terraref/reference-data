@@ -95,7 +95,7 @@ server <- function(input, output) {
       
       # generate timeseries of boxplots from mean value
       ggplot(plot_data, aes(as.Date(date), mean)) + 
-      geom_boxplot(aes(group=cut_width(as.Date(date), 1))) +
+      geom_boxplot(aes(group=cut_width(as.Date(date), 1)), outlier.alpha = 0.1) +
       labs(
         title = paste0(input$selected_variable, ' for ', input$selected_cultivar),
         x = "Observation Dates",
