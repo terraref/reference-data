@@ -3,21 +3,36 @@ library(traits)
 library(ggplot2)
 library(lubridate)
 library(timevis)
+library(cronR)
 
-# set options for BETYdb API
-knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
-options(betydb_key = readLines('~/.betykey', warn = FALSE),
-        betydb_url = "https://terraref.ncsa.illinois.edu/bety/",
-        betydb_api_version = 'beta')
+# set up scheduled execution of cache update
+cache_update_cmd <- cron_rscript("cache-update.R")
+try(cron_add(command = cache_update_cmd, frequency = 'daily', 
+             id = 'cache-update', description = 'daily update of BETYdb cache'))
 
 # load data from file
+# cache structure:
+#   cache_data - list (of seasons)
+#     season 1 - list 
+#       start_date - string
+#       end_date - string
+#       managements - data frame (date, mgmttype)
+#       trait_data - list (of variables)
+#         Emergence Count - list
+#           units - string
+#           traits - data frame (date, mean, cultivar_id)
+#         Canopy Height
+#         ...
+#     season 2
+#     ...
+
 load("cache.RData")
 seasons <- names(cache_data)
 
 # set page UI
 ui <- fluidPage(
   
-  column(width=8, offset=2,
+  column(width = 8, offset = 2,
          
     title = "TERRA-REF Experimental Data",
   
@@ -46,6 +61,7 @@ ui <- fluidPage(
 # render page elements
 server <- function(input, output) {
   
+  # selected_season_data: list of BETYdb data associated with selected season
   selected_season_data <- reactive({ cache_data[[ input$selected_season ]] })
   
   # render menu for variable selection
@@ -57,12 +73,10 @@ server <- function(input, output) {
   output$select_cultivar <- renderUI({
     
     if (!is.null(input$selected_variable)) {
-      
       cultivar_ids <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]][[ 'cultivar_id' ]]
       unique_cultivar_ids <- sort(unique(as.numeric(cultivar_ids)))
       cultivar_select_menu <- c('All Cultivars', unique_cultivar_ids)
       selectInput('selected_cultivar', 'Cultivar', cultivar_select_menu)
-      
     }
   })
   
@@ -71,10 +85,10 @@ server <- function(input, output) {
     
     if (!is.null(input$selected_variable) & !is.null(input$selected_cultivar)) {
       
+      plot_data <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]]
       units <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'units' ]]
       
-      plot_data <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]]
-      
+      # subset trait data by cultivar if individual cultivar selected
       if (input$selected_cultivar != 'All Cultivars') {
         plot_data <- subset(plot_data, cultivar_id == input$selected_cultivar)
       }
@@ -83,7 +97,7 @@ server <- function(input, output) {
       ggplot(plot_data, aes(as.Date(date), mean)) + 
       geom_boxplot(aes(group=cut_width(as.Date(date), 1))) +
       labs(
-        title = paste0(input$selected_variable),
+        title = paste0(input$selected_variable, ' for ', input$selected_cultivar),
         x = "Observation Dates",
         y = units
       ) +
