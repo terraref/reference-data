@@ -21,6 +21,7 @@ try(cron_add(command = cache_update_cmd, frequency = 'daily',
 #         Emergence Count - list
 #           units - string
 #           traits - data frame (date, mean, cultivar_id)
+#           cultivars - vector (of unique cultivars)
 #         Canopy Height
 #         ...
 #     season 2
@@ -34,9 +35,9 @@ ui <- fluidPage(
   
   column(width = 8, offset = 2,
          
-    title = "TERRA-REF Experimental Data",
+    title = "TERRA-REF Experiment Data",
   
-    h1('TERRA-REF Experimental Data'),
+    h1('TERRA-REF Experiment Data'),
 
     # season menu
     selectInput('selected_season', 'Season', seasons),
