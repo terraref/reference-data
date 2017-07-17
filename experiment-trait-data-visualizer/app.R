@@ -87,6 +87,7 @@ server <- function(input, output) {
     if (!is.null(input$selected_variable) & !is.null(input$selected_cultivar)) {
       
       plot_data <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]]
+      data_max <- max(plot_data[[ 'mean' ]])
       units <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'units' ]]
       
       # subset trait data by cultivar if individual cultivar selected
@@ -103,8 +104,8 @@ server <- function(input, output) {
         y = units
       ) +
       theme(text = element_text(size = 20), axis.text.x = element_text(angle = 45, hjust = 1)) +
-      expand_limits(y = 0) + 
-      xlim(as.Date(selected_season_data()[[ 'start_date' ]]), as.Date(selected_season_data()[[ 'end_date' ]]))
+      xlim(as.Date(selected_season_data()[[ 'start_date' ]]), as.Date(selected_season_data()[[ 'end_date' ]])) +
+      ylim(0, data_max)
     }
   })
   
