@@ -33,32 +33,40 @@ seasons <- names(cache_data)
 # set page UI
 ui <- fluidPage(
   
+  title = "TERRA-REF Experiment Data",
+  
   fluidRow(
     column(width = 8, offset = 2,
-           
-      title = "TERRA-REF Experiment Data",
     
-      h1('TERRA-REF Experiment Data'),
-  
-      # season menu
-      selectInput('selected_season', 'Season', seasons),
-    
-      hr(),
-    
-      # variable, cultivar menus to be rendered with variables, cultivars from the selected season
       fluidRow(
-        h3('Trait Data'),
-        column(width = 6, 
+        style = 'margin-bottom: 25px',
+        
+        h1('TERRA-REF Experiment Data'),
+    
+        tags$div(
+          style = "
+            width: 250px;
+            float: left;
+          ",
+          selectInput('selected_season', 'Season', seasons),
+          hr(),
           uiOutput('select_variable'),
           uiOutput('select_cultivar')
         ),
-        column(width = 6,
+        
+        tags$div(
+          style = "
+            width: 200px;
+            float: left;
+            margin-top: 125px;
+            margin-left: 50px;
+          ",
           verbatimTextOutput("hover_info")
         )
       ),
-    
-      plotOutput('trait_plot', height = 500, hover = hoverOpts(id = "plot_hover")),
-    
+      
+      plotOutput('trait_plot', hover = hoverOpts(id = "plot_hover")),
+
       hr(),
       h3('Managements Data'),
     
