@@ -33,30 +33,38 @@ seasons <- names(cache_data)
 # set page UI
 ui <- fluidPage(
   
-  column(width = 8, offset = 2,
-         
-    title = "TERRA-REF Experiment Data",
+  fluidRow(
+    column(width = 8, offset = 2,
+           
+      title = "TERRA-REF Experiment Data",
+    
+      h1('TERRA-REF Experiment Data'),
   
-    h1('TERRA-REF Experiment Data'),
-
-    # season menu
-    selectInput('selected_season', 'Season', seasons),
-  
-    hr(),
-    h3('Trait Data'),
-  
-    # variable, cultivar menus to be rendered with variables, cultivars from the selected season
-    uiOutput('select_variable'),
-    uiOutput('select_cultivar'),
-  
-    plotOutput('trait_plot'),
-  
-    hr(),
-    h3('Managements Data'),
-  
-    timevisOutput('timeline')
+      # season menu
+      selectInput('selected_season', 'Season', seasons),
+    
+      hr(),
+    
+      # variable, cultivar menus to be rendered with variables, cultivars from the selected season
+      fluidRow(
+        h3('Trait Data'),
+        column(width = 6, 
+          uiOutput('select_variable'),
+          uiOutput('select_cultivar')
+        ),
+        column(width = 6,
+          verbatimTextOutput("hover_info")
+        )
+      ),
+    
+      plotOutput('trait_plot', height = 500, hover = hoverOpts(id = "plot_hover")),
+    
+      hr(),
+      h3('Managements Data'),
+    
+      timevisOutput('timeline')
+    )
   )
-  
 )
 
 # render page elements
@@ -98,7 +106,7 @@ server <- function(input, output) {
       { 
         if (input$selected_cultivar != 'None') {
           geom_point(data = subset(plot_data, cultivar_id == input$selected_cultivar), 
-            aes(x = as.Date(date), y = mean, colour = 'red'), size = 2)
+            size = 1, color = "red", aes(x = as.Date(date), y = mean))
         }
       } +
         
@@ -110,6 +118,20 @@ server <- function(input, output) {
       theme(text = element_text(size = 20), axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
       xlim(as.Date(selected_season_data()[[ 'start_date' ]]), as.Date(selected_season_data()[[ 'end_date' ]])) +
       ylim(0, data_max)
+    }
+  })
+  
+  output$hover_info <- renderText({
+    if(!is.null(input$plot_hover)){
+      paste0(
+        'Date \n',
+        toString(
+          as.Date(input$plot_hover$x, origin = lubridate::origin)
+        ),
+        '\n\n',
+        'Value \n',
+        format(round(input$plot_hover$y, 2))
+      )
     }
   })
   
