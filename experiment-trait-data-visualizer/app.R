@@ -88,14 +88,16 @@ server <- function(input, output) {
       
       plot_data <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]]
       data_max <- max(plot_data[[ 'mean' ]])
+      print(data_max)
       units <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'units' ]]
       
       # generate timeseries of boxplots from mean value
       ggplot(plot_data, aes(as.Date(date), mean)) + 
       geom_boxplot(aes(group=cut_width(as.Date(date), 1)), outlier.alpha = 0.1) +
         
-      { if (input$selected_cultivar != 'All Cultivars') {
-          geom_point(data = subset(plot_data, cultivar_id == input$selected_cultivar), 
+      { 
+        if (input$selected_cultivar != 'All Cultivars') {
+         geom_point(data = subset(plot_data, cultivar_id == input$selected_cultivar), 
                      aes(x = as.Date(date), y = mean, colour = 'red'))
         }
       } +

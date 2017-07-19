@@ -36,9 +36,9 @@ get_managements_from_treatments <- function(treatments) {
 
 refresh_cache_for_season <- function(season) {
   
-  season_full_cache_data <- list(start_date = toString(season['start_date']), end_date = toString(season['end_date']))
+  season_cache_data <- list(start_date = toString(season['start_date']), end_date = toString(season['end_date']))
 
-  associated_sites <- betydb_experiment(season[['id']])[[ 'site' ]][[ 'site.id' ]]
+  associated_sites <- betydb_experiment(season[['id']])[[ 'sites' ]][[ 'site.id' ]]
   
   trait_records = NULL
   management_records = NULL
@@ -50,16 +50,18 @@ refresh_cache_for_season <- function(season) {
     
     curr_date_management_records <- betydb_query(table = 'managements', date = paste0('~', curr_date))
     if (!is.null(curr_date_management_records)) {
-      management_records <- data.frame(
-        rbind(management_records, curr_date_management_records[c('id', 'date', 'mgmttype')])
+      management_records <- rbind(
+        management_records,
+        curr_date_management_records[c('id', 'date', 'mgmttype')]
       )
     }
     
     curr_date_trait_records <- betydb_query(table = 'traits', date = paste0('~', curr_date), limit = 'none')
     if (!is.null(curr_date_trait_records)) {
-      valid_trait_records <- subset(curr_date_trait_records, 'site_id' %in% associated_sites)
-      trait_records <- data.frame(
-        rbind(trait_records, valid_trait_records[c('id', 'variable_id', 'date', 'mean', 'cultivar_id', 'treatment_id')])
+      valid_trait_records <- subset(curr_date_trait_records, site_id %in% associated_sites)
+      trait_records <- rbind(
+        trait_records, 
+        valid_trait_records[c('id', 'variable_id', 'date', 'mean', 'cultivar_id', 'treatment_id')]
       )
     }
       
@@ -68,18 +70,30 @@ refresh_cache_for_season <- function(season) {
   
   treatment_ids <- unique(na.omit(as.numeric(trait_records[[ 'treatment_id' ]])))
   management_ids <- get_managements_from_treatments(treatment_ids)
-  management_records <- subset(management_records, id %in% management_ids)
+
+  management_records <- data.frame(
+    subset(
+      management_records,
+      id %in% management_ids
+    )
+  )
   
   season_trait_data <- list()
   
-  variable_ids = unique(na.omit(as.numeric(trait_records[[ 'variable_id' ]])))
+  variable_ids = unique(as.numeric(trait_records[[ 'variable_id' ]]))
   
-  for (variable_id in variable_ids) {
+  for (curr_variable_id in variable_ids) {
     
     variable_cache_data <- list()
     
-    variable_trait_records <- subset(trait_records, variable_id == variable_id)[c('id', 'date', 'mean', 'cultivar_id')]
-    variable_metadata <- get_variable_metadata(variable_id)
+    variable_trait_records <- data.frame(
+      subset(
+        trait_records,
+        variable_id == curr_variable_id
+      )[c('id', 'date', 'mean', 'cultivar_id')]
+    )
+    
+    variable_metadata <- get_variable_metadata(curr_variable_id)
     
     variable_cache_data[[ 'units' ]] <- variable_metadata[[ 'units' ]]
     variable_cache_data[[ 'traits' ]] <- variable_trait_records
@@ -95,13 +109,13 @@ refresh_cache_for_season <- function(season) {
     
     variable_cache_data[[ 'cultivars' ]] <- cultivar_ids
     
-    season_trait_data[[ variable_metadata[[ 'name' ]] ]] <- variable_cache_data
+    season_trait_data[[ variable_metadata$name ]] <- variable_cache_data
   }
   
   season_cache_data[[ 'managements' ]] <- management_records
   season_cache_data[[ 'trait_data' ]] <- season_trait_data
   
-  cache_data[[ toString(season['name']) ]] <- season_full_cache_data
+  cache_data[[ toString(season[[ 'name' ]]) ]] <- season_cache_data
   
   save(cache_data, file = "cache.RData")
 }
@@ -115,7 +129,7 @@ refresh_cache <- function() {
   season_names <- gsub(":.*$","", unlist(unique_seasons['name']))
   
   seasons <- cbind(seasons, name = season_names, unique_seasons['id'])
-  
+
   apply(seasons, 1, refresh_cache_for_season)
   
   save(cache_data, file = "cache.RData")
