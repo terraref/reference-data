@@ -74,9 +74,9 @@ server <- function(input, output) {
   output$select_cultivar <- renderUI({
     
     if (!is.null(input$selected_variable)) {
-      cultivar_ids <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]][[ 'cultivar_id' ]]
-      unique_cultivar_ids <- sort(unique(as.numeric(cultivar_ids)))
-      cultivar_select_menu <- c('All Cultivars', unique_cultivar_ids)
+      cultivar_ids <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'cultivars' ]]
+      unique_cultivar_ids <- cultivar_ids
+      cultivar_select_menu <- c('None', unique_cultivar_ids)
       selectInput('selected_cultivar', 'Cultivar', cultivar_select_menu)
     }
   })
@@ -88,7 +88,7 @@ server <- function(input, output) {
       
       plot_data <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]]
       data_max <- max(plot_data[[ 'mean' ]])
-      print(data_max)
+
       units <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'units' ]]
       
       # generate timeseries of boxplots from mean value
@@ -96,9 +96,9 @@ server <- function(input, output) {
       geom_boxplot(aes(group=cut_width(as.Date(date), 1)), outlier.alpha = 0.1) +
         
       { 
-        if (input$selected_cultivar != 'All Cultivars') {
-         geom_point(data = subset(plot_data, cultivar_id == input$selected_cultivar), 
-                     aes(x = as.Date(date), y = mean, colour = 'red'))
+        if (input$selected_cultivar != 'None') {
+          geom_point(data = subset(plot_data, cultivar_id == input$selected_cultivar), 
+            aes(x = as.Date(date), y = mean, colour = 'red'), size = 2)
         }
       } +
         
