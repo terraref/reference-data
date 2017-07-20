@@ -21,7 +21,7 @@ try(cron_add(command = cache_update_cmd, frequency = 'daily',
 #         Emergence Count - list
 #           units - string
 #           traits - data frame (date, mean, cultivar_id)
-#           cultivars - vector (of unique cultivars)
+#           cultivars - vector (of unique cultivars with names)
 #         Canopy Height
 #         ...
 #     season 2
@@ -61,7 +61,7 @@ ui <- fluidPage(
             margin-top: 125px;
             margin-left: 50px;
           ",
-          verbatimTextOutput("hover_info")
+          verbatimTextOutput("trait_hover_info")
         )
       ),
       
@@ -69,7 +69,15 @@ ui <- fluidPage(
 
       hr(),
       h3('Managements Data'),
-    
+      
+      tags$div(
+        style = "
+          width: 500px;
+          height: auto;
+        ",
+        verbatimTextOutput("management_hover_info")
+      ),
+      
       timevisOutput('timeline')
     )
   )
@@ -129,7 +137,7 @@ server <- function(input, output) {
     }
   })
   
-  output$hover_info <- renderText({
+  output$trait_hover_info <- renderText({
     if(!is.null(input$plot_hover)){
       paste0(
         'Date \n',
@@ -143,16 +151,35 @@ server <- function(input, output) {
     }
   })
   
+  output$management_hover_info <- renderText({
+    if(!is.null(input$timeline_selected)){
+      selected_record <- subset(
+          selected_season_data()[[ 'managements' ]],
+          id == input$timeline_selected
+      )
+      paste0(
+        selected_record[[ 'mgmttype' ]],
+        '\n',
+        selected_record[[ 'date' ]],
+        '\n\n',
+        selected_record[[ 'notes' ]]
+      )
+    }
+  })
+  
   # generate timeline visualization for management data
   output$timeline <- renderTimevis({
     management_data <- selected_season_data()[[ 'managements' ]]
     timeline_data <- data.frame(
-      id = 1:nrow(management_data),
+      id = management_data$id,
       content = management_data$mgmttype,
       start = as.Date(management_data$date)
     )
     
-    timevis(timeline_data)
+    timevis(
+      timeline_data,
+      options = list(zoomable = FALSE)
+    )
   })
 }
 

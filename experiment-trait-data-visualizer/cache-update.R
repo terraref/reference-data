@@ -7,9 +7,7 @@ knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
 options(betydb_key = readLines('~/.betykey', warn = FALSE),
         betydb_url = "https://terraref.ncsa.illinois.edu/bety/",
         betydb_api_version = 'beta')
-
-# main data structure to be stored in cache.RData
-cache_data <- list()
+options(scipen=999)
 
 get_variable_metadata<- function(variable_id) {
   
@@ -34,7 +32,7 @@ get_managements_from_treatments <- function(treatments) {
   return(management_ids)
 }
 
-refresh_cache_for_season <- function(season) {
+refresh_cache_for_season <- function(season, cache_data) {
   
   season_cache_data <- list(start_date = toString(season['start_date']), end_date = toString(season['end_date']))
 
@@ -52,7 +50,7 @@ refresh_cache_for_season <- function(season) {
     if (!is.null(curr_date_management_records)) {
       management_records <- rbind(
         management_records,
-        curr_date_management_records[c('id', 'date', 'mgmttype')]
+        curr_date_management_records[c('id', 'date', 'mgmttype', 'notes')]
       )
     }
     
@@ -122,6 +120,8 @@ refresh_cache_for_season <- function(season) {
 
 refresh_cache <- function() {
   
+  cache_data <- list()
+  
   experiments <- as.data.frame(betydb_query(table = 'experiments'))
   seasons <- unique(experiments[c('start_date', 'end_date')])
   
@@ -130,9 +130,8 @@ refresh_cache <- function() {
   
   seasons <- cbind(seasons, name = season_names, unique_seasons['id'])
 
-  apply(seasons, 1, refresh_cache_for_season)
+  apply(seasons, 1, refresh_cache_for_season, cache_data)
   
-  save(cache_data, file = "cache.RData")
   Sys.setenv(last_cache_update_date = toString(Sys.Date()))
 }
 
