@@ -37,6 +37,8 @@ refresh_cache_for_season <- function(season, cache_data) {
   season_cache_data <- list(start_date = toString(season['start_date']), end_date = toString(season['end_date']))
 
   associated_sites <- betydb_experiment(season[['id']])[[ 'sites' ]][[ 'site.id' ]]
+  if (is.null(associated_sites))
+    return()
   
   trait_records = NULL
   management_records = NULL
@@ -112,17 +114,19 @@ refresh_cache_for_season <- function(season, cache_data) {
   
   season_cache_data[[ 'managements' ]] <- management_records
   season_cache_data[[ 'trait_data' ]] <- season_trait_data
+
+  cache_data <- list()
+  if (file.exists("cache.RData"))
+    load("cache.RData")
   
   cache_data[[ toString(season[[ 'name' ]]) ]] <- season_cache_data
-  
   save(cache_data, file = "cache.RData")
 }
 
 refresh_cache <- function() {
   
-  cache_data <- list()
-  
   experiments <- as.data.frame(betydb_query(table = 'experiments'))
+
   seasons <- unique(experiments[c('start_date', 'end_date')])
   
   unique_seasons <- experiments[rownames(seasons),]
@@ -130,7 +134,7 @@ refresh_cache <- function() {
   
   seasons <- cbind(seasons, name = season_names, unique_seasons['id'])
 
-  apply(seasons, 1, refresh_cache_for_season, cache_data)
+  apply(seasons, 1, refresh_cache_for_season)
   
   Sys.setenv(last_cache_update_date = toString(Sys.Date()))
 }

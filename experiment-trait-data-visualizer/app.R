@@ -7,8 +7,8 @@ library(cronR)
 
 # set up scheduled execution of cache update
 cache_update_cmd <- cron_rscript("cache-update.R")
-try(cron_add(command = cache_update_cmd, frequency = 'daily', 
-             id = 'cache-update', description = 'daily update of BETYdb cache'))
+#try(cron_add(command = cache_update_cmd, frequency = 'daily', 
+#             id = 'cache-update', description = 'daily update of BETYdb cache'))
 
 # load data from file
 # cache structure:
