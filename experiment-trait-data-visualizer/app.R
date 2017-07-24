@@ -6,29 +6,9 @@ library(timevis)
 library(cronR)
 
 # set up scheduled execution of cache update
-cache_update_cmd <- cron_rscript("cache-update.R")
+#cache_update_cmd <- cron_rscript("cache-refresh.R")
 #try(cron_add(command = cache_update_cmd, frequency = 'daily', 
-#             id = 'cache-update', description = 'daily update of BETYdb cache'))
-
-# load data from file
-# cache structure:
-#   cache_data - list (of seasons)
-#     season 1 - list 
-#       start_date - string
-#       end_date - string
-#       managements - data frame (date, mgmttype)
-#       trait_data - list (of variables)
-#         Emergence Count - list
-#           units - string
-#           traits - data frame (date, mean, cultivar_id)
-#           cultivars - vector (of unique cultivars with names)
-#         Canopy Height
-#         ...
-#     season 2
-#     ...
-
-load("cache.RData")
-seasons <- names(cache_data)
+#            id = 'cache-update', description = 'daily update of BETYdb cache'))
 
 # set page UI
 ui <- fluidPage(
@@ -48,7 +28,7 @@ ui <- fluidPage(
             width: 250px;
             float: left;
           ",
-          selectInput('selected_season', 'Season', seasons),
+          uiOutput('select_season'),
           hr(),
           uiOutput('select_variable'),
           uiOutput('select_cultivar')
@@ -86,21 +66,35 @@ ui <- fluidPage(
 # render page elements
 server <- function(input, output) {
   
-  # selected_season_data: list of BETYdb data associated with selected season
-  selected_season_data <- reactive({ cache_data[[ input$selected_season ]] })
+  load("cache.RData")
+  seasons <- names(full_cache_data)
+
+  output$select_season <- renderUI({
+    selectInput('selected_season', 'Season', seasons)
+  })
+  
+  selected_season_data <- reactive({ 
+    if (!is.null(input$selected_season))
+      full_cache_data[[ input$selected_season ]]
+    else
+      NULL
+  })
   
   # render menu for variable selection
   output$select_variable <- renderUI({
-    selectInput('selected_variable', 'Variable', names(selected_season_data()[[ 'trait_data' ]]))
+    if (!is.null(input$selected_season)) {
+      selectInput('selected_variable', 'Variable', names(selected_season_data()[[ 'trait_data' ]]))
+    } 
   })
   
   # render menu for cultivar selection
   output$select_cultivar <- renderUI({
     
     if (!is.null(input$selected_variable)) {
-      cultivar_ids <- selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'cultivars' ]]
-      unique_cultivar_ids <- cultivar_ids
-      cultivar_select_menu <- c('None', unique_cultivar_ids)
+      cultivars <- unique(
+        selected_season_data()[[ 'trait_data' ]][[ input$selected_variable ]][[ 'traits' ]][[ 'cultivar_name' ]]
+      )
+      cultivar_select_menu <- c('None', cultivars)
       selectInput('selected_cultivar', 'Cultivar', cultivar_select_menu)
     }
   })
@@ -121,7 +115,7 @@ server <- function(input, output) {
         
       { 
         if (input$selected_cultivar != 'None') {
-          geom_point(data = subset(plot_data, cultivar_id == input$selected_cultivar), 
+          geom_point(data = subset(plot_data, cultivar_name == input$selected_cultivar), 
             size = 1, color = "red", aes(x = as.Date(date), y = mean))
         }
       } +
@@ -138,6 +132,7 @@ server <- function(input, output) {
   })
   
   output$trait_hover_info <- renderText({
+    
     if(!is.null(input$plot_hover)){
       paste0(
         'Date \n',
@@ -152,6 +147,7 @@ server <- function(input, output) {
   })
   
   output$management_hover_info <- renderText({
+    
     if(!is.null(input$timeline_selected)){
       selected_record <- subset(
           selected_season_data()[[ 'managements' ]],
@@ -169,17 +165,20 @@ server <- function(input, output) {
   
   # generate timeline visualization for management data
   output$timeline <- renderTimevis({
+
     management_data <- selected_season_data()[[ 'managements' ]]
-    timeline_data <- data.frame(
-      id = management_data$id,
-      content = management_data$mgmttype,
-      start = as.Date(management_data$date)
-    )
-    
-    timevis(
-      timeline_data,
-      options = list(zoomable = FALSE)
-    )
+    if (nrow(management_data) > 0) {
+      timeline_data <- data.frame(
+        id = management_data[[ 'id' ]],
+        content = management_data[[ 'mgmttype' ]],
+        start = management_data[[ 'date' ]]
+      )
+
+      timevis(
+        timeline_data,
+        options = list(zoomable = FALSE)
+      )
+    }
   })
 }
 
