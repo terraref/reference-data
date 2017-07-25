@@ -1,5 +1,6 @@
 library(dplyr)
 library(tools)
+library(lubridate)
 options(scipen=999)
 
 get_data_for_season <- function(season) {
@@ -59,12 +60,12 @@ get_data_for_season <- function(season) {
   season_management_ids <- tbl(bety_src, 'managements_treatments') %>%
     filter(treatment_id %in% season_treatment_ids) %>%
     collect() %>% unlist(use.names = FALSE)
-  ""
+  
   season_managements <- tbl(bety_src, 'managements') %>%
     filter(date >= season[[ 'start_date' ]] & date <= season[[ 'end_date' ]]) %>%
     filter(id %in% season_management_ids) %>%
     select(id, date, mgmttype, notes) %>%
-    collect() %>% as.data.frame()
+    collect()
   
   season_data[[ 'managements' ]] <- season_managements
   
