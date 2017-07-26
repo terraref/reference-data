@@ -6,151 +6,116 @@ library(timevis)
 library(cronR)
 
 # set up scheduled execution of cache update
-#cache_update_cmd <- cron_rscript("cache-refresh.R")
+#cache_update_cmd <- cron_rscript('cache-refresh.R')
 #try(cron_add(command = cache_update_cmd, frequency = 'daily', 
 #            id = 'cache-update', description = 'daily update of BETYdb cache'))
 
 # set page UI
-ui <- fluidPage(theme = "style.css",
+ui <- fluidPage( theme = shinytheme('flatly'),
   
-  title = "TERRA-REF Experiment Data",
+  tags$link(rel = 'stylesheet', type = 'text/css', href = 'style.css'),
+  title = 'TERRA-REF Experiment Data',
   
-  fluidRow(
-    column(width = 8, offset = 2,
-    
-      fluidRow(
-        class = 'title-row',
-        
-        h1('TERRA-REF Experiment Data'),
-    
-        tags$div(
-          class = 'select-input-group',
-          
-          uiOutput('select_season'),
-          hr(),
-          uiOutput('select_variable'),
-          uiOutput('select_cultivar')
-        ),
-        
-        tags$div(
-          class = 'hover-text',
-          
-          verbatimTextOutput('trait_hover_info')
-        )
-      ),
-      
-      plotOutput('trait_plot', hover = hoverOpts(id = 'plot_hover')),
-
-      hr(),
-      h3('Managements Data'),
-      
-      tags$div(
-        class = 'management-select-info',
-        
-        verbatimTextOutput('management_hover_info')
-      ),
-      
-      timevisOutput('timeline')
-    )
-  )
+  tags$img(src = 'logo.png', class = 'logo'),
+  h1('TERRA-REF Experiment Data'),
+  
+  uiOutput('page_content')
 )
 
-# render page elements
-server <- function(input, output) {
+render_season_ui <- function(season_name) {
   
-  load('cache.RData')
-  
-  output$select_season <- renderUI({
-    seasons <- names(full_cache_data)
-    selectInput('selected_season', 'Season', seasons)
-  })
-  
-  # render menu for variable selection
-  output$select_variable <- renderUI({
-    req(input$selected_season)
-    
-    variable_names <- names(full_cache_data[[ input$selected_season ]][[ 'trait_data' ]])
-    
-    selectInput('selected_variable', 'Variable', variable_names)
-  })
-  
-  # render menu for cultivar selection
-  output$select_cultivar <- renderUI({
-    req(input$selected_season)
-    req(input$selected_variable)
-    
-    variable_traits <- full_cache_data[[ input$selected_season ]][[ 'trait_data' ]]
-    cultivars <- unique(
-      variable_traits[[ input$selected_variable ]][[ 'traits' ]][[ 'cultivar_name' ]]
-    )
-    cultivar_menu <- c('None', cultivars)
-    
-    selectInput('selected_cultivar', 'Cultivar', cultivar_menu)
-  })
-  
-  # render plot for selected variable, cultivar
-  output$trait_plot <- renderPlot({
-  
-    req(input$selected_season)
-    req(input$selected_variable)
-    req(input$selected_cultivar)
+  tabPanel(season_name,
+           
+    sidebarPanel(class = "sidebar",
+      uiOutput(paste0('variable_select_', season_name)),
+      uiOutput(paste0('cultivar_select_', season_name))
+    ),
+     
+    uiOutput(paste0(paste0('plot_hover_info_', season_name))),
+     
+    mainPanel(style="width: 100%;",
+      plotOutput(paste0('trait_plot_', season_name), 
+                  hover = hoverOpts(id = paste0('plot_hover_', season_name))),
+      hr(),
       
-    selected_season_data <- full_cache_data[[ input$selected_season ]]
-    selected_variable <- input$selected_variable
-    selected_cultivar <- input$selected_cultivar
+      uiOutput(paste0('mgmt_select_info_', season_name)),
+      timevisOutput(paste0('mgmt_timeline_', season_name))
+    )
+  )
+}
 
+render_variable_menu <- function(season_name, output) {
+  
+  variable_names <- names(full_cache_data[[ season_name ]][[ 'trait_data' ]])
+  
+  output[[ paste0('variable_select_', season_name) ]] <- renderUI({
+    selectInput(paste0('selected_variable_', season_name), 'Variable', variable_names)
+  })
+}
+
+render_cultivar_menu <- function(season_name, input, output) {
+  
+  output[[ paste0('cultivar_select_', season_name) ]] <- renderUI({
+    
+    req(input[[ paste0('selected_variable_', season_name) ]])
+    
+    trait_records <- full_cache_data[[ season_name ]][[ 'trait_data' ]][[ input[[ paste0('selected_variable_', season_name) ]] ]][[ 'traits' ]]
+    unique_cultivars <- unique(trait_records[[ 'cultivar_name' ]])
+    
+    selectInput(paste0('selected_cultivar_', season_name), 'Cultivar', c('None', unique_cultivars))
+  })
+}
+
+render_trait_plot <- function(season_name, input, output) {
+  
+  output[[ paste0('trait_plot_', season_name) ]] <- renderPlot({
+    
+    req(input[[ paste0('selected_variable_', season_name) ]])
+    req(input[[ paste0('selected_cultivar_', season_name) ]])
+    
+    selected_season_data <- full_cache_data[[ season_name ]]
+    selected_variable <- input[[ paste0('selected_variable_', season_name) ]]
+    selected_cultivar <- input[[ paste0('selected_cultivar_', season_name) ]]
+    
     plot_data <- selected_season_data[[ 'trait_data' ]][[ selected_variable ]][[ 'traits' ]]
     data_max <- max(plot_data[[ 'mean' ]])
-
+    
     units <- selected_season_data[[ 'trait_data' ]][[ selected_variable ]][[ 'units' ]]
     
     # generate timeseries of boxplots from mean value
     ggplot(plot_data, aes(as.Date(date), mean)) + 
     geom_boxplot(aes(group = cut_width(as.Date(date), 1)), outlier.alpha = 0.1) +
-      
+    
     { 
       if (selected_cultivar != 'None') {
         geom_point(data = subset(plot_data, cultivar_name == selected_cultivar), 
-          size = 1, color = "red", aes(x = as.Date(date), y = mean))
+                   size = 1, color = "red", aes(x = as.Date(date), y = mean))
       }
     } +
-      
+    
     labs(
       title = selected_variable,
       x = "Observation Dates",
       y = units
     ) +
-      
+    
     theme(text = element_text(size = 20), axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
     xlim(as.Date(selected_season_data[[ 'start_date' ]]), as.Date(selected_season_data[[ 'end_date' ]])) +
     ylim(0, data_max)
-
   })
+}
 
-  output$trait_hover_info <- renderText({
-    
-    req(input$plot_hover)
-    
-    paste0(
-      'Date \n',
-      toString(
-        as.Date(input$plot_hover$x, origin = lubridate::origin)
-      ),
-      '\n\n',
-      'Value \n',
-      format(round(input$plot_hover$y, 2))
-    )
-  })
+render_mgmt_timeline <- function(season_name, input, output) {
   
-  # generate timeline visualization for management data
-  output$timeline <- renderTimevis({
-
-      req(input$selected_season)
+  output[[ paste0('mgmt_timeline_', season_name) ]] <- renderTimevis({
     
-      management_data <- full_cache_data[[ input$selected_season ]][[ 'managements' ]]
+    management_data <- full_cache_data[[ season_name ]][[ 'managements' ]]
+    
+    if (nrow(management_data) > 0) {
+      
       types <- management_data[[ 'mgmttype' ]]
       dates <- management_data[[ 'date' ]]
-
+      
       timeline_data <- data.frame(
         id = 1:nrow(management_data),
         content = types,
@@ -161,25 +126,83 @@ server <- function(input, output) {
         timeline_data,
         options = list(zoomable = FALSE)
       )
+    }
+  })
+}
+
+render_plot_hover <- function(season_name, input, output) {
+  
+  output[[ paste0('plot_hover_info_', season_name) ]] <- renderUI({
+    
+    req(input[[ paste0('plot_hover_', season_name) ]])
+    
+    hover <- input[[ paste0('plot_hover_', season_name) ]]
+    
+    wellPanel(class = 'plot-hover-info',
+      HTML(paste0(
+        'Date', '<br>',
+        toString(
+          as.Date(hover$x, origin = lubridate::origin)
+        ),
+        '<br><br>',
+        'Value', '<br>',
+        format(round(hover$y, 2))
+      ))
+    )
+  })
+}
+
+render_timeline_hover <- function(season_name, input, output) {
+  
+  output[[ paste0('mgmt_select_info_', season_name) ]] <- renderUI({
+    
+    req(input[[ paste0('mgmt_timeline_', season_name, '_selected') ]])
+    selected <- input[[ paste0('mgmt_timeline_', season_name, '_selected') ]]
+    
+    management_data <- full_cache_data[[ season_name ]][[ 'managements' ]]
+    selected_record <- management_data[ as.numeric(selected), ]
+    
+    formatted_notes <- ''
+    if (selected_record[[ 'notes' ]] != '')
+      formatted_notes <- paste0('<br><br>', selected_record[[ 'notes' ]])
+    
+    wellPanel(class = 'mgmt-select-info',
+      HTML(paste0(
+        selected_record[[ 'mgmttype' ]], '<br>',
+        selected_record[[ 'date' ]],
+        formatted_notes
+      ))
+    )
+  })
+}
+
+render_season_output <- function(season_name, input, output) {
+  
+  render_variable_menu(season_name, output)
+  
+  render_cultivar_menu(season_name, input, output)
+  
+  render_trait_plot(season_name, input, output)
+  
+  render_mgmt_timeline(season_name, input, output)
+  
+  render_plot_hover(season_name, input, output)
+  
+  render_timeline_hover(season_name, input, output)
+}
+
+# render page elements
+server <- function(input, output) {
+  
+  load('cache.RData')
+  
+  output$page_content <- renderUI({
+    
+    season_tabs <- lapply(names(full_cache_data), render_season_ui)
+    do.call(tabsetPanel, season_tabs)
   })
   
-  output$management_hover_info <- renderText({
-    
-    req(input$selected_season)
-    req(input$timeline_selected)
-    
-    management_data <- full_cache_data[[ input$selected_season ]][[ 'managements' ]]
-    selected_record <- management_data[ as.numeric(input$timeline_selected), ]
-    
-    paste0(
-      selected_record[[ 'mgmttype' ]],
-      '\n',
-      selected_record[[ 'date' ]],
-      '\n\n',
-      selected_record[[ 'notes' ]]
-    )
-
-  })
+  lapply(names(full_cache_data), render_season_output, input, output)
 }
 
 shinyApp(ui = ui, server = server)

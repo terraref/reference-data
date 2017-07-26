@@ -1,0 +1,25 @@
+.logo {
+	float: left;
+	padding-top: 20px;
+	padding-right: 20px;
+}
+.content {
+	margin-top: 25px;
+}
+.sidebar {
+	margin-top: 25px;
+}
+.timeline {
+	margin-top: 25px;
+}
+.plot-hover-info {
+	position: relative;
+	float: left;
+	margin-top: 65px;
+	height: 150px;
+	width: 200px;
+}
+.mgmt-select-info {
+	width: 500px;
+	height: auto;
+}
