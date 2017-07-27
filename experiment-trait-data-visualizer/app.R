@@ -4,6 +4,7 @@ library(ggplot2)
 library(lubridate)
 library(timevis)
 library(cronR)
+library(shinythemes)
 
 # set up scheduled execution of cache update
 #cache_update_cmd <- cron_rscript('cache-refresh.R')
@@ -17,7 +18,6 @@ ui <- fluidPage( theme = shinytheme('flatly'),
   title = 'TERRA-REF Experiment Data',
   
   tags$img(src = 'logo.png', class = 'logo'),
-  h1('TERRA-REF Experiment Data'),
   
   uiOutput('page_content')
 )
@@ -44,7 +44,7 @@ render_season_ui <- function(season_name) {
   )
 }
 
-render_variable_menu <- function(season_name, output) {
+render_variable_menu <- function(season_name, output, full_cache_data) {
   
   variable_names <- names(full_cache_data[[ season_name ]][[ 'trait_data' ]])
   
@@ -53,7 +53,7 @@ render_variable_menu <- function(season_name, output) {
   })
 }
 
-render_cultivar_menu <- function(season_name, input, output) {
+render_cultivar_menu <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('cultivar_select_', season_name) ]] <- renderUI({
     
@@ -66,7 +66,7 @@ render_cultivar_menu <- function(season_name, input, output) {
   })
 }
 
-render_trait_plot <- function(season_name, input, output) {
+render_trait_plot <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('trait_plot_', season_name) ]] <- renderPlot({
     
@@ -105,7 +105,7 @@ render_trait_plot <- function(season_name, input, output) {
   })
 }
 
-render_mgmt_timeline <- function(season_name, input, output) {
+render_mgmt_timeline <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('mgmt_timeline_', season_name) ]] <- renderTimevis({
     
@@ -130,7 +130,7 @@ render_mgmt_timeline <- function(season_name, input, output) {
   })
 }
 
-render_plot_hover <- function(season_name, input, output) {
+render_plot_hover <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('plot_hover_info_', season_name) ]] <- renderUI({
     
@@ -152,7 +152,7 @@ render_plot_hover <- function(season_name, input, output) {
   })
 }
 
-render_timeline_hover <- function(season_name, input, output) {
+render_timeline_hover <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('mgmt_select_info_', season_name) ]] <- renderUI({
     
@@ -176,19 +176,19 @@ render_timeline_hover <- function(season_name, input, output) {
   })
 }
 
-render_season_output <- function(season_name, input, output) {
+render_season_output <- function(season_name, input, output, full_cache_data) {
   
-  render_variable_menu(season_name, output)
+  render_variable_menu(season_name, output, full_cache_data)
   
-  render_cultivar_menu(season_name, input, output)
+  render_cultivar_menu(season_name, input, output, full_cache_data)
   
-  render_trait_plot(season_name, input, output)
+  render_trait_plot(season_name, input, output, full_cache_data)
   
-  render_mgmt_timeline(season_name, input, output)
+  render_mgmt_timeline(season_name, input, output, full_cache_data)
   
-  render_plot_hover(season_name, input, output)
+  render_plot_hover(season_name, input, output, full_cache_data)
   
-  render_timeline_hover(season_name, input, output)
+  render_timeline_hover(season_name, input, output, full_cache_data)
 }
 
 # render page elements
@@ -202,7 +202,7 @@ server <- function(input, output) {
     do.call(tabsetPanel, season_tabs)
   })
   
-  lapply(names(full_cache_data), render_season_output, input, output)
+  lapply(names(full_cache_data), render_season_output, input, output, full_cache_data)
 }
 
 shinyApp(ui = ui, server = server)

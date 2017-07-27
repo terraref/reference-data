@@ -1,7 +1,5 @@
 .logo {
-	float: left;
-	padding-top: 20px;
-	padding-right: 20px;
+  margin: 25px;
 }
 .content {
 	margin-top: 25px;

@@ -3,7 +3,7 @@ library(tools)
 library(lubridate)
 options(scipen=999)
 
-get_data_for_season <- function(season) {
+get_data_for_season <- function(season, bety_src) {
   
   season_data <- list(start_date = season[[ 'start_date' ]], end_date = season[[ 'end_date' ]])
   
@@ -97,4 +97,4 @@ seasons <- experiments[
 
 seasons[[ 'name' ]] <- gsub(":.*$","", seasons[[ 'name' ]])
 
-apply(seasons, 1, get_data_for_season)
+apply(seasons, 1, get_data_for_season, bety_src)
