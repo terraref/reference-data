@@ -3,8 +3,11 @@ library(traits)
 library(ggplot2)
 library(lubridate)
 library(timevis)
+library(leaflet)
 library(cronR)
 library(shinythemes)
+
+source('render-site-map.R')
 
 # set up scheduled execution of cache update
 #cache_update_cmd <- cron_rscript('cache-refresh.R')
@@ -17,7 +20,7 @@ ui <- fluidPage( theme = shinytheme('flatly'),
   tags$link(rel = 'stylesheet', type = 'text/css', href = 'style.css'),
   title = 'TERRA-REF Experiment Data',
   
-  tags$img(src = 'logo.png', class = 'logo'),
+  tags$img(src = 'logo.png', class = 'push-out'),
   
   uiOutput('page_content')
 )
@@ -26,20 +29,30 @@ render_season_ui <- function(season_name) {
   
   tabPanel(season_name,
            
-    sidebarPanel(class = "sidebar",
+    sidebarPanel(class = 'push-down',
       uiOutput(paste0('variable_select_', season_name)),
       uiOutput(paste0('cultivar_select_', season_name))
     ),
      
     uiOutput(paste0(paste0('plot_hover_info_', season_name))),
-     
-    mainPanel(style="width: 100%;",
-      plotOutput(paste0('trait_plot_', season_name), 
-                  hover = hoverOpts(id = paste0('plot_hover_', season_name))),
-      hr(),
-      
-      uiOutput(paste0('mgmt_select_info_', season_name)),
-      timevisOutput(paste0('mgmt_timeline_', season_name))
+    
+    mainPanel(class = 'main-panel',
+    tabsetPanel(
+        tabPanel('Plot',
+          div(class = 'push-down',
+            plotOutput(paste0('trait_plot_', season_name), 
+                        hover = hoverOpts(id = paste0('plot_hover_', season_name)))
+          ),
+          hr(),
+          uiOutput(paste0('mgmt_select_info_', season_name)),
+          timevisOutput(paste0('mgmt_timeline_', season_name))
+        ),
+        tabPanel('Map',
+          div(class = 'map-container push-out',
+            leafletOutput(paste0('site_map_', season_name), width = '750px', height = '1000px')
+          )
+        )
+      )
     )
   )
 }
@@ -138,7 +151,7 @@ render_plot_hover <- function(season_name, input, output, full_cache_data) {
     
     hover <- input[[ paste0('plot_hover_', season_name) ]]
     
-    wellPanel(class = 'plot-hover-info',
+    wellPanel(class = 'plot-hover-info push-down',
       HTML(paste0(
         'Date', '<br>',
         toString(
@@ -176,6 +189,13 @@ render_timeline_hover <- function(season_name, input, output, full_cache_data) {
   })
 }
 
+render_map <- function(season_name, output, full_cache_data) {
+  
+  output[[ paste0('site_map_', season_name) ]] <- renderLeaflet({
+    render_site_map(full_cache_data[[ season_name ]][[ 'site_ids' ]])
+  })
+}
+
 render_season_output <- function(season_name, input, output, full_cache_data) {
   
   render_variable_menu(season_name, output, full_cache_data)
@@ -189,6 +209,8 @@ render_season_output <- function(season_name, input, output, full_cache_data) {
   render_plot_hover(season_name, input, output, full_cache_data)
   
   render_timeline_hover(season_name, input, output, full_cache_data)
+
+  render_map(season_name, output, full_cache_data)
 }
 
 # render page elements

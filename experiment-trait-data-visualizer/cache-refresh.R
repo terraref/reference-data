@@ -15,6 +15,8 @@ get_data_for_season <- function(season, bety_src) {
   if (is.null(season_site_ids))
     return()
   
+  season_data[[ 'site_ids' ]] <- season_site_ids
+  
   season_trait_table <- tbl(bety_src, 'traits') %>%
     filter(date >= season[[ 'start_date' ]] & date <= season[[ 'end_date' ]]) %>%
     filter(site_id %in% season_site_ids) %>%
@@ -78,11 +80,11 @@ get_data_for_season <- function(season, bety_src) {
 }
 
 bety_src <- src_postgres(
-  dbname = "bety",
-  password = "KakvoSeHoroIzvilo",
-  host = "localhost",
-  port = "5432",
-  user = "bety"
+  dbname = Sys.getenv('bety_dbname'),
+  password = Sys.getenv('bety_password'),
+  host = Sys.getenv('bety_host'),
+  port = Sys.getenv('bety_port'),
+  user = Sys.getenv('bety_user')
 )
 
 experiments <- tbl(bety_src, 'experiments') %>% 

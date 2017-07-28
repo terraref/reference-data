@@ -1,23 +1,27 @@
-.logo {
+html, body {
+  height: 100%;
+}
+.main-panel {
+  width: 100%;
+}
+.push-down {
+  margin-top: 25px;
+}
+.push-out {
   margin: 25px;
-}
-.content {
-	margin-top: 25px;
-}
-.sidebar {
-	margin-top: 25px;
-}
-.timeline {
-	margin-top: 25px;
 }
 .plot-hover-info {
 	position: relative;
 	float: left;
-	margin-top: 65px;
 	height: 150px;
 	width: 200px;
 }
 .mgmt-select-info {
 	width: 500px;
 	height: auto;
+}
+.map-container {
+  width: 750px;
+  margin-left: auto;
+  margin-right: auto;
 }
