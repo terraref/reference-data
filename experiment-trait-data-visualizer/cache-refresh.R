@@ -17,16 +17,16 @@ get_data_for_season <- function(season, bety_src) {
   
   season_data[[ 'site_ids' ]] <- season_site_ids
   
-  season_trait_table <- tbl(bety_src, 'traits') %>%
+  season_traits_table <- tbl(bety_src, 'traits') %>%
     filter(date >= season[[ 'start_date' ]] & date <= season[[ 'end_date' ]]) %>%
     filter(site_id %in% season_site_ids) %>%
-    select(date, mean, variable_id, cultivar_id, treatment_id)
+    select(date, mean, variable_id, cultivar_id, treatment_id, site_id)
   
   trait_cultivars <- tbl(bety_src, 'cultivars') %>%
     mutate(cultivar_id = id, cultivar_name = name) %>%
     select(cultivar_id, cultivar_name)
   
-  season_traits <- season_trait_table %>% left_join(trait_cultivars, by = 'cultivar_id') %>%
+  season_traits <- season_traits_table %>% left_join(trait_cultivars, by = 'cultivar_id') %>%
     collect() %>% as.data.frame()
   
   if (nrow(season_traits) == 0)
@@ -43,12 +43,13 @@ get_data_for_season <- function(season, bety_src) {
     
     variable_record <- tbl(bety_src, 'variables') %>%
       filter(id == curr_variable_id) %>%
-      select(name, units) %>% collect()
+      select(id, name, units) %>% collect()
     
     variable_name <- toTitleCase(gsub('_', ' ', variable_record[[ 'name' ]]))
     variable_traits <- subset(season_traits, variable_id == curr_variable_id)
     
     variable_data[[ 'units' ]] <- variable_record[[ 'units' ]]
+    variable_data[[ 'id' ]] <- variable_record[[ 'id' ]]
     variable_data[[ 'traits' ]] <- variable_traits
     
     season_trait_data[[ variable_name ]] <- variable_data

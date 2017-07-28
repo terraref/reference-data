@@ -107,7 +107,7 @@ render_trait_plot <- function(season_name, input, output, full_cache_data) {
     } +
     
     labs(
-      title = selected_variable,
+      title = paste0(selected_variable, '\n'),
       x = "Observation Dates",
       y = units
     ) +
@@ -189,10 +189,16 @@ render_timeline_hover <- function(season_name, input, output, full_cache_data) {
   })
 }
 
-render_map <- function(season_name, output, full_cache_data) {
+render_map <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('site_map_', season_name) ]] <- renderLeaflet({
-    render_site_map(full_cache_data[[ season_name ]][[ 'site_ids' ]])
+    
+    req(input[[ paste0('selected_variable_', season_name) ]])
+    selected_variable <- input[[ paste0('selected_variable_', season_name) ]]
+    
+    traits <- full_cache_data[[ season_name ]][[ 'trait_data' ]][[ selected_variable ]][[ 'traits' ]]
+    
+    render_site_map(traits)
   })
 }
 
@@ -210,7 +216,7 @@ render_season_output <- function(season_name, input, output, full_cache_data) {
   
   render_timeline_hover(season_name, input, output, full_cache_data)
 
-  render_map(season_name, output, full_cache_data)
+  render_map(season_name, input, output, full_cache_data)
 }
 
 # render page elements
