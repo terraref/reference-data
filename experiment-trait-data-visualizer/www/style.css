@@ -25,3 +25,7 @@ html, body {
   margin-left: auto;
   margin-right: auto;
 }
+.map-message {
+  font-style: italic;
+  font-size: 18px;
+}
