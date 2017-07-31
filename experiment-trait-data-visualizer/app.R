@@ -49,8 +49,8 @@ render_season_ui <- function(season_name) {
         ),
         tabPanel('Map',
           div(class = 'map-container push-out',
-            p(class = 'map-message', 'Showing data from latest recorded observation date'),
-            leafletOutput(paste0('site_map_', season_name), width = '750px', height = '1000px')
+            uiOutput(paste0('map_date_slider_', season_name)),
+            leafletOutput(paste0('site_map_', season_name), width = '600px', height = '600px')
           )
         )
       )
@@ -107,7 +107,7 @@ render_trait_plot <- function(season_name, input, output, full_cache_data) {
       if (selected_cultivar != 'None') {
         title <- paste0(title, ' for ', selected_cultivar)
         geom_line(data = subset(plot_data, cultivar_name == selected_cultivar), 
-                   size = 0.5, color = "#00C49F", aes(x = as.Date(date), y = mean, group = site_id))
+                   size = 0.5, color = '#00C49F', aes(x = as.Date(date), y = mean, group = site_id))
       }
     } +
     
@@ -196,13 +196,22 @@ render_timeline_hover <- function(season_name, input, output, full_cache_data) {
 
 render_map <- function(season_name, input, output, full_cache_data) {
   
+  output[[ paste0('map_date_slider_', season_name) ]] <- renderUI({
+    sliderInput(paste0('map_date_', season_name), 'Date', 
+                as.Date(full_cache_data[[ season_name ]][[ 'start_date']]), 
+                as.Date(full_cache_data[[ season_name ]][[ 'end_date' ]]),
+                as.Date(full_cache_data[[ season_name ]][[ 'end_date' ]]))
+  })
+  
   output[[ paste0('site_map_', season_name) ]] <- renderLeaflet({
     
     req(input[[ paste0('selected_variable_', season_name) ]])
     req(input[[ paste0('selected_cultivar_', season_name) ]])
+    req(input[[ paste0('map_date_', season_name) ]])
     
     selected_variable <- input[[ paste0('selected_variable_', season_name) ]]
     selected_cultivar <- input[[ paste0('selected_cultivar_', season_name) ]]
+    render_date <- input [[ paste0('map_date_', season_name) ]]
     
     traits <- full_cache_data[[ season_name ]][[ 'trait_data' ]][[ selected_variable ]][[ 'traits' ]]
     
@@ -214,9 +223,10 @@ render_map <- function(season_name, input, output, full_cache_data) {
       units <- paste0('(', units, ')')
     legend_title <- paste0(selected_variable, ' ', units)
     
-    render_site_map(traits, legend_title)
+    render_site_map(traits, legend_title, render_date)
   })
 }
+
 
 render_season_output <- function(season_name, input, output, full_cache_data) {
   
@@ -233,6 +243,7 @@ render_season_output <- function(season_name, input, output, full_cache_data) {
   render_timeline_hover(season_name, input, output, full_cache_data)
 
   render_map(season_name, input, output, full_cache_data)
+
 }
 
 # render page elements
