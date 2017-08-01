@@ -9,26 +9,28 @@ library(shinythemes)
 
 source('render-site-map.R')
 
-# set up scheduled execution of cache update
-#cache_update_cmd <- cron_rscript('cache-refresh.R')
-#try(cron_add(command = cache_update_cmd, frequency = 'daily', 
-#            id = 'cache-update', description = 'daily update of BETYdb cache'))
+# schedule daily execution of cache refresh
+cache_update_cmd <- cron_rscript('cache-refresh.R')
+try(cron_add(command = cache_update_cmd, frequency = 'daily', 
+            id = 'cache-update', description = 'daily update of BETYdb cache'))
 
 # set page UI
-ui <- fluidPage( theme = shinytheme('flatly'),
+ui <- fluidPage(theme = shinytheme('flatly'),
   
   tags$link(rel = 'stylesheet', type = 'text/css', href = 'style.css'),
   title = 'TERRA-REF Experiment Data',
   
   tags$img(src = 'logo.png', class = 'push-out'),
   
+  # destination for all dynamic UI elements
   uiOutput('page_content')
 )
 
+# render UI for a given season
 render_season_ui <- function(season_name) {
   
   tabPanel(season_name,
-           
+    
     sidebarPanel(class = 'push-down',
       uiOutput(paste0('variable_select_', season_name)),
       uiOutput(paste0('cultivar_select_', season_name))
@@ -58,6 +60,7 @@ render_season_ui <- function(season_name) {
   )
 }
 
+# render selection menu from available variables in a given season
 render_variable_menu <- function(season_name, output, full_cache_data) {
   
   variable_names <- names(full_cache_data[[ season_name ]][[ 'trait_data' ]])
@@ -67,6 +70,7 @@ render_variable_menu <- function(season_name, output, full_cache_data) {
   })
 }
 
+# render selection menu from available cultivars in a given season, for the selected variable
 render_cultivar_menu <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('cultivar_select_', season_name) ]] <- renderUI({
@@ -80,6 +84,8 @@ render_cultivar_menu <- function(season_name, input, output, full_cache_data) {
   })
 }
 
+# render box plot time series from trait records in a given season, for the selected variable
+# if a cultivar is selected, render line plot from trait records for that cultivar
 render_trait_plot <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('trait_plot_', season_name) ]] <- renderPlot({
@@ -99,7 +105,6 @@ render_trait_plot <- function(season_name, input, output, full_cache_data) {
     if (units != '')
       title <- paste0(selected_variable, ' (', units, ')')
     
-    # generate timeseries of boxplots from mean value
     ggplot(plot_data, aes(as.Date(date), mean)) + 
     geom_boxplot(aes(group = cut_width(as.Date(date), 1)), outlier.alpha = 0.1) +
     
@@ -123,6 +128,7 @@ render_trait_plot <- function(season_name, input, output, full_cache_data) {
   })
 }
 
+# render timeline from management records in a given season
 render_mgmt_timeline <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('mgmt_timeline_', season_name) ]] <- renderTimevis({
@@ -148,6 +154,7 @@ render_mgmt_timeline <- function(season_name, input, output, full_cache_data) {
   })
 }
 
+# render info box for date and value of cursor when hovering box/line plot
 render_plot_hover <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('plot_hover_info_', season_name) ]] <- renderUI({
@@ -170,6 +177,7 @@ render_plot_hover <- function(season_name, input, output, full_cache_data) {
   })
 }
 
+# render info box for date, type, and notes of selected (clicked) timeline item
 render_timeline_hover <- function(season_name, input, output, full_cache_data) {
   
   output[[ paste0('mgmt_select_info_', season_name) ]] <- renderUI({
@@ -196,6 +204,7 @@ render_timeline_hover <- function(season_name, input, output, full_cache_data) {
 
 render_map <- function(season_name, input, output, full_cache_data) {
   
+  # render slider input from dates in a given season
   output[[ paste0('map_date_slider_', season_name) ]] <- renderUI({
     sliderInput(paste0('map_date_', season_name), 'Date', 
                 as.Date(full_cache_data[[ season_name ]][[ 'start_date']]), 
@@ -203,6 +212,7 @@ render_map <- function(season_name, input, output, full_cache_data) {
                 as.Date(full_cache_data[[ season_name ]][[ 'end_date' ]]))
   })
   
+  # render heat map of sites from trait records in a given season, for the selected date, variable and cultivar
   output[[ paste0('site_map_', season_name) ]] <- renderLeaflet({
     
     req(input[[ paste0('selected_variable_', season_name) ]])
@@ -227,7 +237,7 @@ render_map <- function(season_name, input, output, full_cache_data) {
   })
 }
 
-
+# render outputs for a given season
 render_season_output <- function(season_name, input, output, full_cache_data) {
   
   render_variable_menu(season_name, output, full_cache_data)
@@ -243,20 +253,20 @@ render_season_output <- function(season_name, input, output, full_cache_data) {
   render_timeline_hover(season_name, input, output, full_cache_data)
 
   render_map(season_name, input, output, full_cache_data)
-
 }
 
-# render page elements
 server <- function(input, output) {
   
+  # load 'full_cache_data' object from cache file
   load('cache.RData')
   
+  # render UI for all available seasons
   output$page_content <- renderUI({
-    
     season_tabs <- lapply(names(full_cache_data), render_season_ui)
     do.call(tabsetPanel, season_tabs)
   })
   
+  # render outputs for all available seasons
   lapply(names(full_cache_data), render_season_output, input, output, full_cache_data)
 }
 
