@@ -1,5 +1,4 @@
 library(shiny)
-library(traits)
 library(ggplot2)
 library(lubridate)
 library(timevis)
@@ -11,8 +10,8 @@ source('render-site-map.R')
 
 # schedule daily execution of cache refresh
 cache_update_cmd <- cron_rscript('cache-refresh.R')
-try(cron_add(command = cache_update_cmd, frequency = 'daily', 
-            id = 'cache-update', description = 'daily update of BETYdb cache'))
+# try(cron_add(command = cache_update_cmd, frequency = 'daily', 
+#            id = 'cache-update', description = 'daily update of BETYdb cache'))
 
 # set page UI
 ui <- fluidPage(theme = shinytheme('flatly'),
@@ -233,7 +232,7 @@ render_map <- function(season_name, input, output, full_cache_data) {
       units <- paste0('(', units, ')')
     legend_title <- paste0(selected_variable, ' ', units)
     
-    render_site_map(traits, legend_title, render_date)
+    render_site_map(traits, render_date, legend_title)
   })
 }
 

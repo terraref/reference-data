@@ -2,7 +2,7 @@
 
 This repository is for discussing the format and content of data products that the TERRA Reference team will produce.
 
-Most of the discussions occur in the form of [GitHub issues](https://github.com/terraref/reference-data/issues). You can ask questions, request new or updated data products, and propose new formats to support there by contacting us in our [chat room](https://gitter.im/terraref/reference-data) or creating a [new issue](https://github.com/terraref/reference-data/issues/new).
+Most of the discussions occur in the form of [GitHub issues](https://github.com/terraref/reference-data/issues). You can ask questions, request new or updated data products, and propose new formats to support there by creating a [new issue](https://github.com/terraref/reference-data/issues/new).
 
 ## Proposing new data products
 
