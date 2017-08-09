@@ -257,6 +257,8 @@ render_season_output <- function(season_name, input, output, full_cache_data) {
 server <- function(input, output) {
   
   # load 'full_cache_data' object from cache file
+  if (!file.exists('cache.RData'))
+    source('cache-refresh.R')
   load('cache.RData')
   
   # render UI for all available seasons
