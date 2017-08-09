@@ -101,8 +101,9 @@ get_data_for_season <- function(season) {
   
   # load existing full_cache_data object if exists, otherwise use empty list object
   full_cache_data <- list()
-  if (file.exists("cache.RData"))
+  if (file.exists("cache.RData")){
     load("cache.RData")
+  }
   
   # save data for given season
   full_cache_data[[ toString(season[[ 'name' ]]) ]] <- season_data
