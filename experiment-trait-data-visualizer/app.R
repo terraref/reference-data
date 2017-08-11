@@ -107,7 +107,7 @@ render_trait_plot <- function(season_name, input, output, full_cache_data) {
     title <- ifelse(units == '', selected_variable, paste0(selected_variable, ' (', units, ')'))
     
     trait_plot <- ggplot() + 
-      geom_violin(data = plot_data, scale = 'width', width = 0.75,
+      geom_violin(data = plot_data, scale = 'width', width = 1,
                    aes(x = as.Date(date), y = mean, 
                        group = as.Date(date))) +
       geom_boxplot(data = plot_data, 
@@ -124,7 +124,7 @@ render_trait_plot <- function(season_name, input, output, full_cache_data) {
           geom_point(data = subset(plot_data, cultivar_name == selected_cultivar), 
                      color = 'red', aes(x = as.Date(date), y = mean, group = site_id)) +
           geom_line(data = subset(plot_data, cultivar_name == selected_cultivar), 
-                     size = 0.5, color = 'red', aes(x = as.Date(date), y = mean, group = site_id)) 
+                     size = 0.25, color = 'red', alpha = 0.25, aes(x = as.Date(date), y = mean, group = site_id)) 
     }
     
     trait_plot + 
@@ -133,7 +133,6 @@ render_trait_plot <- function(season_name, input, output, full_cache_data) {
         x = "Date",
         y = units
       ) +
-      
       theme_bw() + 
       theme(text = element_text(size = 20), axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
       xlim(as.Date(selected_season_data[[ 'start_date' ]]), as.Date(selected_season_data[[ 'end_date' ]])) +
@@ -202,8 +201,10 @@ render_timeline_hover <- function(season_name, input, output, full_cache_data) {
     selected_record <- management_data[ as.numeric(selected), ]
     
     formatted_notes <- ''
-    if (selected_record[[ 'notes' ]] != '')
+    if (selected_record[[ 'notes' ]] != '') {
       formatted_notes <- paste0('<br><br>', selected_record[[ 'notes' ]])
+    }
+      
     
     wellPanel(class = 'mgmt-select-info',
       HTML(paste0(
@@ -238,12 +239,16 @@ render_map <- function(season_name, input, output, full_cache_data) {
     
     traits <- full_cache_data[[ season_name ]][[ 'trait_data' ]][[ selected_variable ]][[ 'traits' ]]
     
-    if (selected_cultivar != 'None')
+    if (selected_cultivar != 'None'){
       traits <- subset(traits, cultivar_name == selected_cultivar)
+    }
+      
     
     units <- full_cache_data[[ season_name ]][[ 'trait_data' ]][[ selected_variable ]][[ 'units' ]]
-    if (units != '')
+    if (units != '') {
       units <- paste0('(', units, ')')
+    }
+      
     legend_title <- paste0(selected_variable, ' ', units)
     
     render_site_map(traits, render_date, legend_title)
