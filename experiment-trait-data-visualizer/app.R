@@ -103,31 +103,41 @@ render_trait_plot <- function(season_name, input, output, full_cache_data) {
     plot_data <- selected_season_data[[ 'trait_data' ]][[ selected_variable ]][[ 'traits' ]]
     data_max <- max(plot_data[[ 'mean' ]])
     
-    title <- selected_variable
     units <- selected_season_data[[ 'trait_data' ]][[ selected_variable ]][[ 'units' ]]
-    if (units != '')
-      title <- paste0(selected_variable, ' (', units, ')')
+    title <- ifelse(units == '', selected_variable, paste0(selected_variable, ' (', units, ')'))
     
-    ggplot(plot_data, aes(as.Date(date), mean)) + 
-    geom_boxplot(aes(group = cut_width(as.Date(date), 1)), outlier.alpha = 0.1) +
+    trait_plot <- ggplot() + 
+      geom_violin(data = plot_data, scale = 'width', width = 0.75,
+                   aes(x = as.Date(date), y = mean, 
+                       group = as.Date(date))) +
+      geom_boxplot(data = plot_data, 
+                  aes(x = as.Date(date), y = mean, 
+                      group = as.Date(date)), 
+                  outlier.alpha = 0.25, width = 0.2)  
+#      geom_point(data = plot_data, 
+#                 aes(x = as.Date(date), y = mean), 
+#                 alpha = 0.1, size = 0.1, position = position_jitter(width = 0.1))
+      
+    if (selected_cultivar != 'None') {
+        title <- paste0(title, '\nCultivar ', selected_cultivar, ' in red')
+        trait_plot <- trait_plot + 
+          geom_point(data = subset(plot_data, cultivar_name == selected_cultivar), 
+                     color = 'red', aes(x = as.Date(date), y = mean, group = site_id)) +
+          geom_line(data = subset(plot_data, cultivar_name == selected_cultivar), 
+                     size = 0.5, color = 'red', aes(x = as.Date(date), y = mean, group = site_id)) 
+    }
     
-    { 
-      if (selected_cultivar != 'None') {
-        title <- paste0(title, ' for ', selected_cultivar)
-        geom_line(data = subset(plot_data, cultivar_name == selected_cultivar), 
-                   size = 0.5, color = '#00C49F', aes(x = as.Date(date), y = mean, group = site_id))
-      }
-    } +
-    
-    labs(
-      title = paste0(title, '\n'),
-      x = "Observation Dates",
-      y = units
-    ) +
-    
-    theme(text = element_text(size = 20), axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
-    xlim(as.Date(selected_season_data[[ 'start_date' ]]), as.Date(selected_season_data[[ 'end_date' ]])) +
-    ylim(0, data_max)
+    trait_plot + 
+      labs(
+        title = paste0(title, '\n'),
+        x = "Date",
+        y = units
+      ) +
+      
+      theme_bw() + 
+      theme(text = element_text(size = 20), axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
+      xlim(as.Date(selected_season_data[[ 'start_date' ]]), as.Date(selected_season_data[[ 'end_date' ]])) +
+      ylim(0, data_max)
   })
 }
 
@@ -261,8 +271,10 @@ render_season_output <- function(season_name, input, output, full_cache_data) {
 server <- function(input, output) {
   
   # load 'full_cache_data' object from cache file
-  if (!file.exists('cache.RData'))
+  if (!file.exists('cache.RData')){
     source('cache-refresh.R')
+  }
+    
   load('cache.RData')
   
   # render UI for all available seasons
