@@ -11,11 +11,9 @@ source('render-site-map.R')
 # schedule daily execution of cache refresh
 cache_update_cmd <- cron_rscript('cache-refresh.R')
 
-if(!grepl('cache-update', cronR::cron_ls())){
-  cron_add(command = cache_update_cmd, frequency = 'daily', 
-           id = 'cache-update', description = 'daily update of BETYdb cache')
-}
-
+cron_clear(ask = FALSE)
+cron_add(command = cache_update_cmd, frequency = 'daily', 
+         id = 'cache-update', description = 'daily update of BETYdb cache')
 
 # set page UI
 ui <- fluidPage(theme = shinytheme('flatly'),

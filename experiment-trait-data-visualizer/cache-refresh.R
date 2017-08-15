@@ -41,7 +41,9 @@ get_data_for_season <- function(season) {
     select(date, mean, variable_id, cultivar_id, treatment_id, site_id)
   
   n_traits <- traits_table %>% summarize(n = n()) %>% collect(n = Inf)
-  if(n_traits == 0) return()
+  if(n_traits == 0){
+    return()
+  } 
   sites_table <- tbl(bety_src, sql("select ST_AsText(sites.geometry) AS geometry, id from sites")) %>% 
     filter(!is.na(geometry)) %>% 
     filter(id %in% site_ids) %>%
