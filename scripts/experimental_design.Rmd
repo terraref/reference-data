@@ -1,0 +1,57 @@
+# Experimental Design
+
+
+```{r setup, echo=FALSE, message = FALSE}
+library(googlesheets)
+library(knitr)
+library(dplyr)
+
+opts_knit$set(echo = FALSE, message = FALSE, cache = TRUE)
+
+```
+## Accessions
+
+```{r accessions, echo = FALSE, message = FALSE}
+ss <- gs_key("1Nfabx_n1rNlO6NW3olD8MAibJ3KHnOMmMwOYYw4wwGc")
+accessions <- gs_read(ss, ws = "Accessions")
+a <- accessions %>% mutate_each( funs_( lazyeval::interp( ~replace(., is.na(.), "") ) ) ) %>% select(Entry, Code, Source,  Pedigree, Pedigree2)  
+
+a[1:193,] %>% kable
+
+a[195:201,] %>% kable(caption = a[194,'Entry'])
+
+a[204:252,] %>% kable(caption = a[203,'Entry'])
+
+```
+
+https://docs.google.com/spreadsheets/d/1Nfabx_n1rNlO6NW3olD8MAibJ3KHnOMmMwOYYw4wwGc/pubhtml?gid=239932660&amp;single=true
+
+## Experiments
+
+```{r experiments, echo = FALSE, message = FALSE}
+experiments <- gs_read(ss, ws = "Experiments")
+experiments %>% kable 
+```
+
+https://docs.google.com/spreadsheets/d/1Nfabx_n1rNlO6NW3olD8MAibJ3KHnOMmMwOYYw4wwGc/pubhtml?gid=890543376&amp;single=true
+
+## 2016 Field Layout 
+
+### Under Gantry
+
+```{r gantry-plot-layout, echo = FALSE, message = FALSE}
+gantry_plot_layout <- gs_read(ss, ws = "Gantry Plot Layout")
+gantry_plot_layout %>% kable 
+```
+
+https://docs.google.com/spreadsheets/d/1Nfabx_n1rNlO6NW3olD8MAibJ3KHnOMmMwOYYw4wwGc/pubhtml?gid=1231399646&amp;single=true
+
+### West of Gantry 
+
+```{r west-of-gantry-plot-layout, echo = FALSE, message = FALSE}
+west_of_gantry_plot_layout <- gs_read(ss, ws = "West of Gantry Plot Layout")
+west_of_gantry_plot_layout %>% kable 
+```
+
+https://docs.google.com/spreadsheets/d/1Nfabx_n1rNlO6NW3olD8MAibJ3KHnOMmMwOYYw4wwGc/pubhtml?gid=728631369&amp;single=true
+

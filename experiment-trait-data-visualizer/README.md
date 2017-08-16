@@ -29,7 +29,8 @@ apt-get install cron
 #### Setup and Notes
 
 * Data are cached in a file `cache.RData` and updated using the cronR R interface to cron
-* Access to BETYdb remote access requires ssh tunnel `ssh -Nf -L 5432:localhost:5432 bety6.ncsa.illinois.edu`
+* Access to BETYdb remote access requires ssh tunnel 
+  * `ssh -Nf -L 5432:localhost:5432 bety6.ncsa.illinois.edu`
   * requires access, which can be [requested here](https://identity.ncsa.illinois.edu/join/TU49BUUEDM)
 * Set the following environment variables
 

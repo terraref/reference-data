@@ -13,7 +13,8 @@ render_site_map <- function(traits, render_date, legend_title) {
     domain = traits[[ 'mean' ]]
   )
   
-  map <- leaflet(options = leafletOptions(minZoom = 20, maxZoom = 21)) %>% addTiles()
+  map <- leaflet(options = leafletOptions(minZoom = 18, maxZoom = 21))  %>% 
+    addProviderTiles(providers$Esri.WorldImagery) # eventually want to overlay with stitched image from current day
 
   # add polygon for each site, color by trait mean value
   if (nrow(latest_traits) > 0) {
@@ -24,7 +25,10 @@ render_site_map <- function(traits, render_date, legend_title) {
   
       if ('polygons' %in% names(attributes(site_poly))) {
         trait_value <- curr_trait[[ 'mean' ]]
-        map <- addPolygons(map, data = site_poly, color = pal(trait_value))
+        map <- addPolygons(map, data = site_poly, 
+                           color = pal(trait_value), opacity = 0, 
+                           fillColor = pal(trait_value), fillOpacity = 0.8)
+                           #TODO add popup = plot name + trait value for plot 
       }
     }
   }
