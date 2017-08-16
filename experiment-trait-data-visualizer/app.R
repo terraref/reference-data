@@ -1,163 +1,293 @@
 library(shiny)
-library(traits)
 library(ggplot2)
 library(lubridate)
-library(DataCache)
 library(timevis)
+library(leaflet)
+library(cronR)
+library(shinythemes)
 
-# set options for BETYdb API
-knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
-options(betydb_key = readLines('~/.betykey', warn = FALSE),
-        betydb_url = "https://terraref.ncsa.illinois.edu/bety/",
-        betydb_api_version = 'beta')
+source('render-site-map.R')
 
-# get list of seasons for user to select from
-experiments <- as.data.frame(betydb_query(table='experiments'))
-seasons <- unique(experiments[c('start_date', 'end_date')])
-rownames(seasons) <- paste0('[', seasons$start_date, ']', ' - ', '[', seasons$end_date, ']')
+# schedule daily execution of cache refresh
+cache_update_cmd <- cron_rscript('cache-refresh.R')
+
+cron_clear(ask = FALSE)
+cron_add(command = cache_update_cmd, frequency = 'daily', 
+         id = 'cache-update', description = 'daily update of BETYdb cache')
 
 # set page UI
-ui <- fluidPage(
+ui <- fluidPage(theme = shinytheme('flatly'),
   
-  column(width=8, offset=2, 
-    title = "TERRA-REF Experimental Data",
+  tags$link(rel = 'stylesheet', type = 'text/css', href = 'style.css'),
+  title = 'TERRA-REF Experiment Data',
   
-    h1('TERRA-REF Experimental Data'),
-
-    # season menu
-    selectInput('selectedSeason', 'Season', rownames(seasons)),
+  tags$img(src = 'logo.png', class = 'push-out'),
   
-    hr(),
-  
-    h3('Trait Data'),
-  
-    # variable menu to be rendered when variables for a given season are parsed in server()
-    uiOutput('selectVariable'),
-  
-    plotOutput('traitPlot'),
-  
-    hr(),
-    h3('Managements Data'),
-  
-    timevisOutput('timeline')
-  )
-  
+  # destination for all dynamic UI elements
+  uiOutput('page_content')
 )
 
-# load trait data from BETYdb
-# function is used only by DataCache library to get and update data
-loadTraitData <- function(startDate, endDate) {
+# render UI for a given season
+render_season_ui <- function(season_name) {
   
-  # set progress bar while API is queried
-  withProgress(message="Retrieving BETYdb Data", value=0, {
+  tabPanel(season_name,
     
-    fullTraitData <- data.frame()
+    sidebarPanel(class = 'push-down',
+      uiOutput(paste0('variable_select_', season_name)),
+      uiOutput(paste0('cultivar_select_', season_name))
+    ),
+     
+    uiOutput(paste0(paste0('plot_hover_info_', season_name))),
     
-    initialDateDiff <- as.numeric(difftime(endDate, startDate, units="days"))
-    currDate <- startDate
-    # loop through all days in a given season
-    while (endDate - currDate != 0) {
-      # get trait data for each day
-      currTraitData <- betydb_query(table='traits', date=paste0('~', currDate), limit='none')
-      fullTraitData <- rbind(fullTraitData, currTraitData[c('date', 'mean', 'variable_id', 'specie_id')])
-      currDate <- currDate + days(1)
+    mainPanel(class = 'main-panel',
+    tabsetPanel(
+        tabPanel('Plot',
+          div(class = 'push-down',
+            plotOutput(paste0('trait_plot_', season_name), 
+                        hover = hoverOpts(id = paste0('plot_hover_', season_name)))
+          ),
+          hr(),
+          uiOutput(paste0('mgmt_select_info_', season_name)),
+          timevisOutput(paste0('mgmt_timeline_', season_name))
+        ),
+        tabPanel('Map',
+          div(class = 'map-container push-out',
+            uiOutput(paste0('map_date_slider_', season_name)),
+            leafletOutput(paste0('site_map_', season_name), width = '600px', height = '600px')
+          )
+        )
+      )
+    )
+  )
+}
+
+# render selection menu from available variables in a given season
+render_variable_menu <- function(season_name, output, full_cache_data) {
+  
+  variable_names <- names(full_cache_data[[ season_name ]][[ 'trait_data' ]])
+  
+  output[[ paste0('variable_select_', season_name) ]] <- renderUI({
+    selectInput(paste0('selected_variable_', season_name), 'Variable', variable_names)
+  })
+}
+
+# render selection menu from available cultivars in a given season, for the selected variable
+render_cultivar_menu <- function(season_name, input, output, full_cache_data) {
+  
+  output[[ paste0('cultivar_select_', season_name) ]] <- renderUI({
+    
+    req(input[[ paste0('selected_variable_', season_name) ]])
+    
+    trait_records <- full_cache_data[[ season_name ]][[ 'trait_data' ]][[ input[[ paste0('selected_variable_', season_name) ]] ]][[ 'traits' ]]
+    unique_cultivars <- unique(trait_records[[ 'cultivar_name' ]])
+    
+    selectInput(paste0('selected_cultivar_', season_name), 'Cultivar', c('None', unique_cultivars))
+  })
+}
+
+# render box plot time series from trait records in a given season, for the selected variable
+# if a cultivar is selected, render line plot from trait records for that cultivar
+render_trait_plot <- function(season_name, input, output, full_cache_data) {
+  
+  output[[ paste0('trait_plot_', season_name) ]] <- renderPlot({
+    
+    req(input[[ paste0('selected_variable_', season_name) ]])
+    req(input[[ paste0('selected_cultivar_', season_name) ]])
+    
+    selected_season_data <- full_cache_data[[ season_name ]]
+    selected_variable <- input[[ paste0('selected_variable_', season_name) ]]
+    selected_cultivar <- input[[ paste0('selected_cultivar_', season_name) ]]
+    
+    plot_data <- selected_season_data[[ 'trait_data' ]][[ selected_variable ]][[ 'traits' ]]
+    data_max <- max(plot_data[[ 'mean' ]])
+    
+    units <- selected_season_data[[ 'trait_data' ]][[ selected_variable ]][[ 'units' ]]
+    title <- ifelse(units == '', selected_variable, paste0(selected_variable, ' (', units, ')'))
+    
+    trait_plot <- ggplot() + 
+      geom_violin(data = plot_data, scale = 'width', width = 1,
+                   aes(x = as.Date(date), y = mean, 
+                       group = as.Date(date))) +
+      geom_boxplot(data = plot_data, 
+                  aes(x = as.Date(date), y = mean, 
+                      group = as.Date(date)), 
+                  outlier.alpha = 0.25, width = 0.2)  
+#      geom_point(data = plot_data, 
+#                 aes(x = as.Date(date), y = mean), 
+#                 alpha = 0.1, size = 0.1, position = position_jitter(width = 0.1))
       
-      # update progress bar
-      incProgress(1/initialDateDiff)
+    if (selected_cultivar != 'None') {
+        title <- paste0(title, '\nCultivar ', selected_cultivar, ' in red')
+        trait_plot <- trait_plot + 
+          geom_point(data = subset(plot_data, cultivar_name == selected_cultivar), 
+                     color = 'red', aes(x = as.Date(date), y = mean, group = site_id)) +
+          geom_line(data = subset(plot_data, cultivar_name == selected_cultivar), 
+                     size = 0.25, color = 'red', alpha = 0.25, aes(x = as.Date(date), y = mean, group = site_id)) 
+    }
+    
+    trait_plot + 
+      labs(
+        title = paste0(title, '\n'),
+        x = "Date",
+        y = units
+      ) +
+      theme_bw() + 
+      theme(text = element_text(size = 20), axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
+      xlim(as.Date(selected_season_data[[ 'start_date' ]]), as.Date(selected_season_data[[ 'end_date' ]])) +
+      ylim(0, data_max)
+  })
+}
+
+# render timeline from management records in a given season
+render_mgmt_timeline <- function(season_name, input, output, full_cache_data) {
+  
+  output[[ paste0('mgmt_timeline_', season_name) ]] <- renderTimevis({
+    
+    management_data <- full_cache_data[[ season_name ]][[ 'managements' ]]
+    
+    if (nrow(management_data) > 0) {
+      
+      types <- management_data[[ 'mgmttype' ]]
+      dates <- management_data[[ 'date' ]]
+      
+      timeline_data <- data.frame(
+        id = 1:nrow(management_data),
+        content = types,
+        start = dates
+      )
+      
+      timevis(
+        timeline_data,
+        options = list(zoomable = FALSE)
+      )
     }
   })
-  
-  # format data as for usability with DataCache library
-  retData <- list(fullTraitData)
-  names(retData) <- 'fullTraitData'
-  
-  return(retData)
 }
 
-getManagementsData <- function(startDate, endDate) {
-
-    fullMgmtData <- data.frame()
+# render info box for date and value of cursor when hovering box/line plot
+render_plot_hover <- function(season_name, input, output, full_cache_data) {
+  
+  output[[ paste0('plot_hover_info_', season_name) ]] <- renderUI({
     
-    currDate <- startDate
-    while (endDate - currDate != 0) {
-      # get management data for each day
-      currMgmtData <- betydb_query(table='managements', date=paste0('~', currDate))
-      fullMgmtData <- rbind(fullMgmtData, currMgmtData[c('date', 'mgmttype')])
-      currDate <- currDate + days(1)
+    req(input[[ paste0('plot_hover_', season_name) ]])
+    
+    hover <- input[[ paste0('plot_hover_', season_name) ]]
+    
+    wellPanel(class = 'plot-hover-info push-down',
+      HTML(paste0(
+        'Date', '<br>',
+        toString(
+          as.Date(hover$x, origin = lubridate::origin)
+        ),
+        '<br><br>',
+        'Value', '<br>',
+        format(round(hover$y, 2))
+      ))
+    )
+  })
+}
+
+# render info box for date, type, and notes of selected (clicked) timeline item
+render_timeline_hover <- function(season_name, input, output, full_cache_data) {
+  
+  output[[ paste0('mgmt_select_info_', season_name) ]] <- renderUI({
+    
+    req(input[[ paste0('mgmt_timeline_', season_name, '_selected') ]])
+    selected <- input[[ paste0('mgmt_timeline_', season_name, '_selected') ]]
+    
+    management_data <- full_cache_data[[ season_name ]][[ 'managements' ]]
+    selected_record <- management_data[ as.numeric(selected), ]
+    
+    formatted_notes <- ''
+    if (selected_record[[ 'notes' ]] != '') {
+      formatted_notes <- paste0('<br><br>', selected_record[[ 'notes' ]])
     }
+      
     
-    return(fullMgmtData)
+    wellPanel(class = 'mgmt-select-info',
+      HTML(paste0(
+        selected_record[[ 'mgmttype' ]], '<br>',
+        selected_record[[ 'date' ]],
+        formatted_notes
+      ))
+    )
+  })
 }
 
-# handle all app logic
+render_map <- function(season_name, input, output, full_cache_data) {
+  
+  # render slider input from dates in a given season
+  output[[ paste0('map_date_slider_', season_name) ]] <- renderUI({
+    sliderInput(paste0('map_date_', season_name), 'Date', 
+                as.Date(full_cache_data[[ season_name ]][[ 'start_date']]), 
+                as.Date(full_cache_data[[ season_name ]][[ 'end_date' ]]),
+                as.Date(full_cache_data[[ season_name ]][[ 'end_date' ]]))
+  })
+  
+  # render heat map of sites from trait records in a given season, for the selected date, variable and cultivar
+  output[[ paste0('site_map_', season_name) ]] <- renderLeaflet({
+    
+    req(input[[ paste0('selected_variable_', season_name) ]])
+    req(input[[ paste0('selected_cultivar_', season_name) ]])
+    req(input[[ paste0('map_date_', season_name) ]])
+    
+    selected_variable <- input[[ paste0('selected_variable_', season_name) ]]
+    selected_cultivar <- input[[ paste0('selected_cultivar_', season_name) ]]
+    render_date <- input [[ paste0('map_date_', season_name) ]]
+    
+    traits <- full_cache_data[[ season_name ]][[ 'trait_data' ]][[ selected_variable ]][[ 'traits' ]]
+    
+    if (selected_cultivar != 'None'){
+      traits <- subset(traits, cultivar_name == selected_cultivar)
+    }
+      
+    
+    units <- full_cache_data[[ season_name ]][[ 'trait_data' ]][[ selected_variable ]][[ 'units' ]]
+    if (units != '') {
+      units <- paste0('(', units, ')')
+    }
+      
+    legend_title <- paste0(selected_variable, ' ', units)
+    
+    render_site_map(traits, render_date, legend_title)
+  })
+}
+
+# render outputs for a given season
+render_season_output <- function(season_name, input, output, full_cache_data) {
+  
+  render_variable_menu(season_name, output, full_cache_data)
+  
+  render_cultivar_menu(season_name, input, output, full_cache_data)
+  
+  render_trait_plot(season_name, input, output, full_cache_data)
+  
+  render_mgmt_timeline(season_name, input, output, full_cache_data)
+  
+  render_plot_hover(season_name, input, output, full_cache_data)
+  
+  render_timeline_hover(season_name, input, output, full_cache_data)
+
+  render_map(season_name, input, output, full_cache_data)
+}
+
 server <- function(input, output) {
   
-  # set reactive start date and end date variables to change when selected season changes
-  selectedSeasonRow <- reactive({ seasons[input$selectedSeason,] })
-  seasonStartDate <- reactive({ as.Date(selectedSeasonRow()$start_date) })
-  seasonEndDate <- reactive({ as.Date(selectedSeasonRow()$end_date) })
+  # load 'full_cache_data' object from cache file
+  if (!file.exists('cache.RData')){
+    source('cache-refresh.R')
+  }
+    
+  load('cache.RData')
   
-  # set unique cache name for date range for usability with DataCache library
-  cacheName <- reactive({ paste0('TraitCache_', seasonStartDate(), '_', seasonEndDate()) })
-  
-  # render menu for selecting variable to view data for
-  output$selectVariable <- renderUI({
-    
-    # get access to 'fullTraitData' from cache
-    data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate(), frequency='daily')
- 
-    # get unique variable ids from observations in current season
-    variableIds <- unique(as.numeric(fullTraitData$variable_id))
-    
-    # query API for readable names for variable ids, set names
-    variableNames <- vector()
-    for (variableId in variableIds) {
-      varName <- betydb_query(table='variables', id=variableId)$name
-      varName <- gsub('_', ' ', varName)
-      variableNames <- c(variableNames, varName)
-    }
-    names(variableIds) <- variableNames
-    
-    selectInput('selectedVariable', 'Variable', variableIds)
+  # render UI for all available seasons
+  output$page_content <- renderUI({
+    season_tabs <- lapply(names(full_cache_data), render_season_ui)
+    do.call(tabsetPanel, season_tabs)
   })
   
-  # render plot for selected variable
-  output$traitPlot <- renderPlot({
-
-    # get access to 'fullTraitData' from cache
-    data.cache(cache.name=cacheName(), loadTraitData, startDate=seasonStartDate(), endDate=seasonEndDate())
-    
-    # only render plot of a variable is selected
-    if (!is.null(input$selectedVariable)) {
-      # get observations for selected variable
-      variableIdData <- betydb_query(table='variables', id=input$selectedVariable)
-      variableTraitData <- subset(fullTraitData, variable_id==as.numeric(variableIdData$id))
-      
-      # get specie data for title
-      specieId <- unique(as.numeric(variableTraitData$specie_id))
-      specieData <- betydb_query(table='species', id=specieId)
-      title <- paste0('Mean ', gsub('_', ' ', variableIdData$name), ' for ', specieData$scientificname)
-
-      # generate timeseries of boxplots from mean value
-      ggplot(variableTraitData, aes(as.Date(date), mean)) + 
-      geom_boxplot(aes(group=cut_width(as.Date(date), 1))) +
-      labs(title=title,
-        x="Observation Dates", y=variableIdData$units) +
-        theme(text = element_text(size=20), axis.text.x = element_text(angle=45, hjust=1)) +
-        expand_limits(y=0) + xlim(seasonStartDate(), seasonEndDate())
-    }
-  })
-  
-  # generate timeline visualization for managements data
-  output$timeline <- renderTimevis({
-    mgmtData <- getManagementsData(startDate=seasonStartDate(), endDate=seasonEndDate())
-    timelineData <- data.frame(
-      id=1:nrow(mgmtData),
-      content=paste0(mgmtData$mgmttype),
-      start=as.Date(mgmtData$date)
-    )
-    timevis(timelineData)
-  })
+  # render outputs for all available seasons
+  lapply(names(full_cache_data), render_season_output, input, output, full_cache_data)
 }
 
-shinyApp(ui=ui, server=server)
+shinyApp(ui = ui, server = server)
