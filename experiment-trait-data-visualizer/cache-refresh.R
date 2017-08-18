@@ -14,7 +14,7 @@ options(scipen=999)
 bety_src <- src_postgres(dbname = "bety", 
                          password = 'bety', 
                          #host = 'terra-bety.default', 
-                         host = 'localhost', 
+                         host = 'bety6', 
                          user = 'bety', 
                          port = 5432)
 
