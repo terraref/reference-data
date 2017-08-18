@@ -45,5 +45,7 @@ apt-get install cron
 ```r
 shiny::runGitHub(repo = 'reference-data', 
                  username= 'terraref', 
-                 subdir = 'experiment-trait-data-visualizer')
+                 subdir = 'experiment-trait-data-visualizer',
+                 launch.browser = FALSE
+                 )
 ```
