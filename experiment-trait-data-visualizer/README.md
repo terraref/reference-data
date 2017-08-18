@@ -39,3 +39,11 @@ apt-get install cron
 - bety_host ('localhost')
 - bety_port ('5432')
 - bety_user ('bety')
+
+#### Deploy
+
+```r
+shiny::runGitHub(repo = 'reference-data', 
+                 username= 'terraref', 
+                 subdir = 'experiment-trait-data-visualizer')
+```
