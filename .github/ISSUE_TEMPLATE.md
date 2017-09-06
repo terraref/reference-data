@@ -52,3 +52,17 @@ FOR A FEATURE REQUEST
 * [ ] write test
 * [ ] add to pipeline
 --->
+
+
+<--
+
+## For extractor checks
+
+* [ ] 
+* [ ] code tagged and versioned
+* [ ] metadata checked
+* [ ] changes for 2017 release implemented
+* [ ] issue(s) for changes postponed until 2018 created 
+* [ ] extractor deployed
+
+-->
