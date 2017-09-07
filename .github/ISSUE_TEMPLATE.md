@@ -60,6 +60,7 @@ FOR AN EXTRACTOR / DATA PRODUCT REVIEW
 * [ ] Changes for 2017 release implemented
 * [ ] Issue(s) for changes postponed until 2018 created and listed in README
 * [ ] Extractor tagged/versioned
+* [ ] Data from earlier versions of extractor purged
 * [ ] Extractor deployed
 * [ ] Final output verified/reviewed
 
