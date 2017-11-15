@@ -32,9 +32,9 @@ How would it be used?
       Are there any examples (existing software / utilities)? Please provide reproducible code snippets, links, screenshots, etc
 
 --> 
-### Completion Criteria (REQUIRED/ESSENTIAL)
+### Completion Criteria <!---(REQUIRED/ESSENTIAL)
 
-<!--- How will we know when this is done?
+How will we know when this is done?
 
 Examples:
 
@@ -51,4 +51,17 @@ FOR A FEATURE REQUEST
 * [ ] create algorithm
 * [ ] write test
 * [ ] add to pipeline
+
+FOR AN EXTRACTOR / DATA PRODUCT REVIEW
+
+* [ ] Code review complete (includes extractor, any functions in terrautils, etc)
+* [ ] Sample data output verified 
+* [ ] Sample metadata verified
+* [ ] Changes for 2017 release implemented
+* [ ] Issue(s) for changes postponed until 2018 created and listed in README
+* [ ] Extractor tagged/versioned
+* [ ] Data from earlier versions of extractor purged
+* [ ] Extractor deployed
+* [ ] Final output verified/reviewed
+
 --->
