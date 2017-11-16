@@ -1,6 +1,6 @@
 #!/bin/bash
 
-output_file="/gpfs/largeblockFS/projects/arpae/terraref/users/dlebauer/dataset_count_report.txt"
+output_file="/gpfs/largeblockFS/projects/arpae/terraref/users/dlebauer/dataset_count_report.csv"
 
 echo $(date) > ${output_file}
 
@@ -13,7 +13,7 @@ do
 	for d in ${dates[@]}
 	do
 		count=$(find /gpfs/largeblockFS/projects/arpae/terraref/sites/ua-mac/Level_1/${s}/${d}/ -type d | wc -l)
-		echo "${s},${d},${count}" >> ${output_file}
+		echo "ua-mac, level_1, ${s},${d},${count}" >> ${output_file}
 	done
 done
 
@@ -27,7 +27,7 @@ do
     for d in ${dates[@]}
     do
         count=$(find /gpfs/largeblockFS/projects/arpae/terraref/sites/ua-mac/raw_data/${s}/${d}/ -type d | wc -l)
-        echo "${s},${d},${count}" >> ${output_file}
+        echo "ua-mac, raw,${s},${d},${count}" >> ${output_file}
     done
 done
 chown 47852 ${output_file}
