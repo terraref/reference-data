@@ -8,6 +8,7 @@ Reference data encompasses clear definitions of data formats, semantics, and int
 * [Website](https://terraref.ncsa.illinois.edu)
 * email: dlebauer@illinois.edu
 * [GitHub Issues](https://github.com/terraref/reference-data/issues)
+* [Slack Channel](https://terra-ref.slack.com) ... [register here](https://terraref-slack-invite.herokuapp.com/).
 
 To provide input on the computing pipeline, please visit the [Reference Data GitHub repository](https://github.com/terraref/reference-data).
 
