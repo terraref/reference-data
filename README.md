@@ -20,13 +20,16 @@ To provide input on the computing pipeline, please visit the [Reference Data Git
 
 * Project wide - if any code or data do not have clear terms of reuse, please request that the author provide one. We use [BSD 3 Clause](https://opensource.org/licenses/BSD-3-Clause) by default.
 
-<a href="http://creativecommons.org/licenses/by/4.0/" rel=
-    "license"><img alt="Creative Commons License" src=
-    "https://i.creativecommons.org/l/by/4.0/88x31.png" style=
-    "border-width:0"></a><br>
-    <span>TERRA-REF Reference Data</span> by <a href="terraref.ncsa.illinois.edu"
-    rel="cc:attributionURL">TERRA Reference Team</a> is licensed under a
-    <a href="http://creativecommons.org/licenses/by/4.0/" rel=
-    "license">Creative Commons Attribution 4.0 International License</a>.<br>
-    Based on a work at <a href="github.com/terraref/==REPOSITORY==" rel=
-    "dct:source">github.com/terraref/reference-data</a>
+<p xmlns:dct="http://purl.org/dc/terms/">
+  <a rel="license"
+     href="http://creativecommons.org/publicdomain/zero/1.0/">
+    <img src="https://licensebuttons.net/p/zero/1.0/88x31.png" style="border-style: none;" alt="CC0" />
+  </a>
+  <br />
+  To the extent possible under law,
+  <a rel="dct:publisher"
+     href="terraref.org">TERRA REF</a>
+  has waived all copyright and related or neighboring rights to
+  <span property="dct:title">TERRA Reference Phenotyping Data</span>.
+Scientists are expected to adhere to conventions for citing our data and software in publications. 
+</p>
