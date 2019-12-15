@@ -67,7 +67,7 @@ Scientific legacy workflows are often developed over many years, poorly document
 
 Prometheus wiki for plant protocols: [http://prometheuswiki.publish.csiro.au/tiki-custom\_home.php](http://prometheuswiki.publish.csiro.au/tiki-custom_home.php)
 
-Pérez-Harguindeguy et al (2013) New handbook for standardised measurement of plant functional traits worldwide. Australian Journal of Botany, 61, 167-234. [http://dx.doi.org/10.1071/BT12225](http://dx.doi.org/10.1071/BT12225) http://www.nucleodiversus.org/index.php?mod=page&amp;id=79
+Pérez-Harguindeguy et al (2013) New handbook for standardised measurement of plant functional traits worldwide. Australian Journal of Botany, 61, 167-234. [https://doi.org/10.1071/BT12225](https://doi.org/10.1071/BT12225) http://www.nucleodiversus.org/index.php?mod=page&amp;id=79
 
 [http://earthcube.org/group/geosemantics](http://earthcube.org/group/geosemantics)
 
