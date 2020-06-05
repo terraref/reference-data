@@ -1,0 +1,106 @@
+---
+title: "MAC Season 5 Metadata Upload to bety"
+output: html_document
+---
+
+
+########### Connect to bety database
+```{r dbcon-1, message = FALSE}
+library(RPostgreSQL)
+dbcon <- dbConnect(RPostgreSQL::PostgreSQL(),
+                   dbname = "bety", 
+                   password = 'bety', 
+                   host = 'localhost', 
+                   user = 'bety', 
+                   port = 5432)
+```
+
+
+########### Insert new experiment to experiments table
+```{sql connection = dbcon}
+insert into experiments (name, start_date, end_date, description, design, user_id) 
+values ('MAC Season 5: Durum Wheat', '2017-12-01', '2018-03-31', '', '', 6000000004)
+```
+
+########### Associate new experiment id with site ids
+```{sql connection = dbcon}
+insert into experiments_sites (experiment_id, site_id) 
+   select e.experiment_id, s.site_id 
+        from (select id as experiment_id from experiments where name = 'MAC Season 5: Durum Wheat')  as e 
+     cross join 
+         (select id as site_id from sites where sitename like 'MAC Field Scanner Season 5%') as s
+```
+
+########### Check to see if season 5 sitenames have already been uploaded
+```{r s5_site_query, message = FALSE}
+#get data frame containing all sitenames already present
+sitename_query <- dbGetQuery(dbcon, 'select sitename from sites')
+#convert to vector
+query_sites <- sitename_query$sitename
+
+#read in the Season 5 Durum Wheet sheet 3 subplots file
+season_5 <- read.csv('/Users/kimberlyh/Desktop/season_metadata_upload/season5_wheat/input_data/Season5_DurumWheat_SubPlots.csv', stringsAsFactors = FALSE)
+#get vector containing season 5 sitenames
+season_5_sites <- season_5$site
+
+#determine which season 5 sites have already been inputted
+in_bety <- query_sites[which(query_sites %in% season_5_sites)]
+#looks like all sitenames for season 5 have already been inputted
+identical(sort(in_bety), sort(season_5_sites)) #returns TRUE
+
+```
+
+
+########### Check to see which season 4 sitenames overlap with season 5 sitenames
+```{r s4_s5_overlap, message=FALSE}
+################################################
+#want to check if both season 4 and season 5 have same sitenames
+#get vector containing all season 4 MAC Field Scanner sitenames
+season_4_query <- dbGetQuery(dbcon, "select sitename from sites where sitename like 'MAC Field Scanner Season 4%'")
+season_4_sites <- season_4_query$sitename
+#write to csv
+write.csv(season_4_sites, 'season4_sitenames_bety.csv', row.names=FALSE)
+
+#replace Season 4 in site names to Season 5 to make comparisons
+season_4_sites_sub <- gsub('Season 4', 'Season 5', season_4_sites)
+
+###################################
+###################################
+#determine which sites are available for season 4 but not 5
+in_both <- which(season_4_sites_sub %in% season_5_sites) #season 4 has all site names in season 5 subplot excel sheet 
+
+season_4_unique <- gsub('Season 5', 'Season 4', season_4_sites_sub[which(!(season_4_sites_sub %in% season_5_sites))]) #sitenames unique to season 4
+write.csv(season_4_unique, 'season4_unique.csv', row.names=FALSE) #this file will contain sitenames present for season 4 but not in season 5 subplot excel sheet
+###################################
+###################################
+
+###################################
+###################################
+#determine which sites have been uploaded for season 5 but are not present in the excel sheet
+season_5_query <- dbGetQuery(dbcon, "select sitename from sites where sitename like 'MAC Field Scanner Season 5%'")
+#get vector
+s5_bety_sites <- season_5_query$sitename
+
+#write to csv
+write.csv(s5_bety_sites, 'season5_bety.csv', row.names=FALSE) #this csv will contain all season 5 sitenames already in bety
+
+#compare with season 5 sitenames in subplot excel sheet
+s5_bety_only <- s5_bety_sites[which(!(s5_bety_sites %in% season_5_sites))] #sitenames for season 5 not present in subplots excel sheet #looks like these are the sitenames without the W and E appended
+
+#write to csv
+write.csv(s5_bety_only, 'season5_betyonly.csv', row.names=FALSE) # this csv will contain all season 5 sitenames in bety, but not included in the subplots excel sheet
+```
+
+
+########### Check to see which season 5 cultivars to upload into the cultivars table
+```{r cultivars_query}
+s5_DurumWheat <- read.csv("/Users/kimberlyh/Desktop/season_metadata_upload/season5_wheat/input_data/Season5_DurumWheat_SubPlots.csv", stringsAsFactors = FALSE)
+
+s5_unq_cultivars <- unique(s5_DurumWheat$cultivar) #unique values of cultivars for season 5 durum wheat
+
+bety_cultivars <- dbGetQuery(dbcon, 'select name from cultivars')$name #cultivars already inputted in bety
+
+#see which of season 5 durum wheat cultivars have already been uploaded into database
+s5_bety_cultivars <- bety_cultivars[which(bety_cultivars %in% s5_unq_cultivars)] #looks like season 5 durum wheat cultivars have already been uploaded
+```
+
